@@ -1,16 +1,20 @@
-'use client'
-import { Button } from "@/components/ui/button"
-import { Moon, Sun } from 'lucide-react'
-import { useTheme } from "@/contexts/ThemeContext"
+'use client';
+import { Moon, Sun } from 'lucide-react';
+import { useTheme } from '@/contexts/ThemeContext';
+import { Switch } from '@/components/ui/switch'; // Componente de switch de Shadcn/ui
 
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <Button variant="ghost" size="icon" onClick={toggleTheme}>
-      {theme === 'light' ? <Moon className="h-[1.2rem] w-[1.2rem]" /> : <Sun className="h-[1.2rem] w-[1.2rem]" />}
-      <span className="sr-only">Toggle theme</span>
-    </Button>
+    <div className="flex items-center gap-4 p-2 bg-white dark:bg-gray-900 rounded-lg shadow-md">
+      <Sun className="h-5 w-5" fill="currentColor" /> {/* Ícono de sol */}
+      <Switch
+        checked={theme === 'dark'}
+        onCheckedChange={toggleTheme}
+        className="data-[state=checked]:bg-blue-400 data-[state=unchecked]:bg-gray-300"
+      />
+      <Moon className="h-5 w-5 " fill="currentColor" /> {/* Ícono de luna */}
+    </div>
   );
 }
-

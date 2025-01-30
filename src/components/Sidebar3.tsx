@@ -1,54 +1,37 @@
 import React from "react";
-import {
-  Home,
-  User,
-  MessageCircle,
-  PieChart,
-  Folder,
-  ShoppingCart,
-  Heart,
-  Settings,
-  LogOut,
-  HeartHandshake,
-} from "lucide-react";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import {  Home, User, PieChart, LogOut, HeartHandshake } from "lucide-react";
 import Image from "next/image";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-
+import Link from "next/link";
 interface SidebarProps {
   isOpen: boolean;
   toggleSidebar: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
+  
   const menuItems = [
-    { name: "Inicio", icon: <Home /> },
-    { name: "Usuarios", icon: <User /> },
-    { name: "Apoyos", icon: <HeartHandshake /> },
-    { name: "Estadísticas", icon: <PieChart /> },
-      // { name: "File Manager", icon: <Folder /> },
-      // { name: "Orders", icon: <ShoppingCart /> },
-      // { name: "Saved", icon: <Heart /> },
+    { name: "Inicio", icon: <Home />, link: "/" },    
+    { name: "Apoyos", icon: <HeartHandshake />, link: "/$" },
+    { name: "Estadísticas", icon: <PieChart />, link: "/estadisticas" },
+    { name: "Usuarios", icon: <User />, link: "/login" },
   ];
 
   return (
     <div
-      className={`border flex h-screen transition-all duration-300 overflow-hidden ${isOpen ? "w-64" : "w-20"} bg-white dark:bg-gray-800 text-gray-900 dark:text-white`}
+      className={`shadow-md flex h-screen transition-all duration-200 overflow-hidden ${isOpen ? "w-60" : "w-20"} `}
       aria-hidden={!isOpen}
     >
-      <div className="relative flex flex-col w-full ">
+      <div className="relative flex flex-col w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 shadow-md mt-2">
-          <div className={`flex items-center ${isOpen ? "space-x-4" : "space-x-2"}`}>
-            <Avatar>
+        <div className="flex items-center shadow-md p-4 pl-5">     
+          <div className={`flex items-center ${isOpen ? "space-x-4" : ""}`}>
               <Image
                 src="/images/User.png"
-                alt="User Avatar"
-                width={isOpen ? 50 : 40}
-                height={isOpen ? 50 : 40}
+                alt="Usuario"
+                width="40"
+                height="40"
               />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
+
 
             <div
               className={`overflow-hidden transition-[width,opacity]  ${isOpen ? "w-32 opacity-100 duration-500" : "w-0 opacity-0 duration-0"
@@ -61,41 +44,40 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
         </div>
 
         {/* Navigation */}
-        <nav className="pl-4 flex-1 mt-6">
+        <nav className="p-3 flex-1 shadow-md">
           <ul className="space-y-2">
             {menuItems.map((item, index) => (
               <li key={index}>
-                <a
-                  href="#"
-                  className="flex items-center p-2 rounded-md hover:bg-gray-300 dark:hover:bg-gray-700"
+                <Link href={item.link}
+                  className="p-4 flex items-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
                 >
-                  <span className="w-6 h-6">{item.icon}</span>
+                  <span>{item.icon}</span>
                   <div
                     className={`overflow-hidden transition-[width,opacity]  ${isOpen ? "ml-4 w-32 opacity-100 duration-300" : "w-0 opacity-0 duration-0"
                       }`}
                   >
                     <span className="whitespace-nowrap">{item.name}</span>
                   </div>
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
         </nav>
 
         {/* Footer */}
-        <div className="mt-auto p-4 space-y-4">
-          <a
-            href="#"
-            className="flex items-center p-2 rounded-md hover:bg-gray-300 dark:hover:bg-gray-700"
+        <div className="mt-auto p-3 space-y-4">
+          <Link
+            href="/login"
+            className="flex items-center p-4 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
           >
-            <LogOut className="w-6 h-6" />
+            <LogOut className="" />
             <div
-              className={`overflow-hidden transition-[width,opacity]  ${isOpen ? "ml-4 w-32 opacity-100 duration-300" : "w-0 opacity-0 duration-0"
+              className={`overflow-hidden transition-[width,opacity]  ${isOpen ? "ml-4 w-32 opacity-100" : "w-0 opacity-0 duration-0"
                 }`}
             >
               <span className="whitespace-nowrap">Cerrar Sesión</span>
             </div>
-          </a>
+          </Link>
         </div>
       </div>
     </div>

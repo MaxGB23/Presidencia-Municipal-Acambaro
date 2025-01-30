@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Sidebar } from "@/components/Sidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/app-sidebar"
+import { ThemeProvider } from "@/contexts/ThemeContext";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,8 +14,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+
+
 export const metadata: Metadata = {
-  title: "App Maxiano",
+  title:  "Apoyos",
   description: "Presidencia Municipal de Acámbaro",
 };
 
@@ -27,13 +28,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <title>App Maxiano</title>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <div className="">
+      <title>Apoyos</title>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ThemeProvider>
           {children}
-        </div>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -9,7 +9,7 @@ interface InputProps {
 
 const Input: React.FC<InputProps> = ({ type, id, placeholder = '', label }) => (
   <div>
-    <label htmlFor={id} className="block text-sm lg:text-lg text-gray-800 mb-2">
+    <label htmlFor={id} className="pl-1 block text-sm lg:text-lg text-gray-800 mb-2">
       {label}
     </label>
     <input

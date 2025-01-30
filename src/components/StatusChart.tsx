@@ -31,10 +31,10 @@ const COLORS = {
   Concluido: "#3b82f6",
 }
 
-const handleHover = (data: any, index: number, isHovering: boolean): void => {
-  // Lógica para cambiar algo dinámicamente en hover
-  // console.log(`Barra ${index} está ${isHovering ? "activa" : "inactiva"}`);
-};
+// const handleHover = (data: any, index: number, isHovering: boolean): void => {
+//   // Lógica para cambiar algo dinámicamente en hover
+//   // console.log(`Barra ${index} está ${isHovering ? "activa" : "inactiva"}`);
+// };
 
 
 
@@ -129,7 +129,13 @@ export function StatusChart({ data }: StatusChartProps) {
                 <Cell key={`cell-${index}`} fill={COLORS[entry.name as Status]} />
               ))}
             </Pie>
-            <Legend formatter={(value) => <span style={{ color: textColor }}>{value}</span>} />
+            <Legend
+              formatter={(value) => (
+                <span className="p-2" style={{ color: textColor }}>
+                  {value}
+                </span>
+              )}
+            />
           </PieChart>
         )
       case "bar":
@@ -138,6 +144,9 @@ export function StatusChart({ data }: StatusChartProps) {
             <XAxis dataKey="name" tick={{ fill: textColor }} />
             <YAxis tick={{ fill: textColor }} />
             <Tooltip
+              formatter={(value: number) => [
+                `${value} Solicitudes`,    
+              ]}
               contentStyle={{
                 backgroundColor: isDarkMode ? "#1f2937" : "#ffffff",
                 color: textColor,
@@ -146,15 +155,14 @@ export function StatusChart({ data }: StatusChartProps) {
               cursor={{ fill: isDarkMode ? "#374151" : "#e5e7eb" }}
             />
             <Legend
-              formatter={(value) => (
-                <span style={{ color: textColor }}>{value}</span>
-              )}
+              formatter={(value) => (                
+                <span className="p-1" style={{ color: textColor }}>{value === "value" ? "Solicitudes" : value}</span>              )}
             />
             <Bar
               dataKey="value"
               fill="#8884d8"
-              onMouseEnter={(data, index) => handleHover(data, index, true)}
-              onMouseLeave={(data, index) => handleHover(data, index, false)}
+              // onMouseEnter={(data, index) => handleHover(data, index, true)}
+              // onMouseLeave={(data, index) => handleHover(data, index, false)}
             >
               {chartData.map((entry, index) => (
                 <Cell
@@ -174,8 +182,14 @@ export function StatusChart({ data }: StatusChartProps) {
           <LineChart data={chartData}>
             <XAxis dataKey="name" tick={{ fill: textColor }} />
             <YAxis tick={{ fill: textColor }} />
-            <Tooltip contentStyle={{ backgroundColor: isDarkMode ? "#1f2937" : "#ffffff", color: textColor }} />
-            <Legend formatter={(value) => <span style={{ color: textColor }}>{value}</span>} />
+            <Tooltip 
+              formatter={(value: number) => [
+                `${value} Solicitudes`,
+              ]}
+            contentStyle={{ backgroundColor: isDarkMode ? "#1f2937" : "#ffffff", color: textColor }} />
+            <Legend formatter={(value) => (
+              <span style={{ color: textColor }}>{value === "value" ? "Solicitudes" : value}</span>)}
+            />
             <Line type="monotone" dataKey="value" stroke="#8884d8" />
           </LineChart>
         )
@@ -187,7 +201,7 @@ export function StatusChart({ data }: StatusChartProps) {
   return (
     <Card className="dark:bg-gray-800">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="dark:text-white">Estatus de Solicitudes</CardTitle>
+        <CardTitle className="pl-2 dark:text-white">Estatus de Solicitudes</CardTitle>
         <ChartSelector value={chartType} onChange={setChartType} />
       </CardHeader>
       <CardContent>

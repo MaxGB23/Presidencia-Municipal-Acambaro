@@ -8,7 +8,7 @@ interface ChartSelectorProps {
 export function ChartSelector({ value, onChange }: ChartSelectorProps) {
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="w-[180px]" aria-label="Seleccionar tipo de gráfico">
+      <SelectTrigger className="w-[180px] dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700" aria-label="Seleccionar tipo de gráfico">
         <SelectValue placeholder="Seleccionar tipo de gráfico" />
       </SelectTrigger>
       <SelectContent>
