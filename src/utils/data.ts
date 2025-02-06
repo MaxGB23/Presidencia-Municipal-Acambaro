@@ -7,6 +7,7 @@ export interface UserData {
   domicilio: string;
   telefono: string;
   solicitud: string;
+  apoyo: string;
   horaYFecha: string;
   estatus: Status;
   nota: string;
@@ -23,13 +24,14 @@ export const mockData: UserData[] = [
   {
     id: '1',
     curp: 'MELM8305281HDFNNS09',
-    nombre: 'Juan Pérez',
+    nombre: 'Pedro Murillo',
     domicilio: 'Calle 123, Ciudad de México',
     telefono: '55-34-82-22-95',
-    solicitud: 'Renovación de licencia',
+    solicitud: 'Solicitud de despensas',
+    apoyo: 'Despensas',
     horaYFecha: '2024-12-15 10:30',
     estatus: 'Concluido',
-    nota: '',
+    nota: 'Apoyo en un lapso menor a 6 meses',
   },
   {
     id: '2',
@@ -38,6 +40,7 @@ export const mockData: UserData[] = [
     domicilio: 'Av. Principal 456, Guadalajara',
     telefono: '333-5678',
     solicitud: 'Cambio de domicilio',
+    apoyo: 'Funerarios',
     horaYFecha: '2024-04-16 14:45',
     estatus: 'Recibido',
     nota: 'Falta comprobante de domicilio',
@@ -49,6 +52,7 @@ export const mockData: UserData[] = [
     domicilio: 'Calle Central 789, Monterrey',
     telefono: '818-9012',
     solicitud: 'Baja de vehículo',
+    apoyo: 'Concentradores',
     horaYFecha: '2024-08-17 09:15',
     estatus: 'Cancelado',
     nota: 'Solicitante no se presentó',
@@ -60,6 +64,7 @@ export const mockData: UserData[] = [
     domicilio: 'Av. Reforma 321, Puebla',
     telefono: '222-3456',
     solicitud: 'Trámite de pasaporte',
+    apoyo: 'Medicamento',
     horaYFecha: '2024-09-18 11:00',
     estatus: 'Concluido',
     nota: 'Pasaporte entregado',
@@ -71,6 +76,7 @@ export const mockData: UserData[] = [
     domicilio: 'Calle 123, Ciudad de México',
     telefono: '555-1234',
     solicitud: 'Renovación de licencia',
+    apoyo: 'Vales de Gasolina',
     horaYFecha: '2024-07-15 10:30',
     estatus: 'Recibido',
     nota: 'Documentos completos',
@@ -82,6 +88,7 @@ export const mockData: UserData[] = [
     domicilio: 'Av. Principal 456, Guadalajara',
     telefono: '333-5678',
     solicitud: 'Cambio de domicilio',
+    apoyo: 'Despensas',
     horaYFecha: '2024-02-16 14:45',
     estatus: 'Cancelado',
     nota: 'Falta comprobante de domicilio',
@@ -93,6 +100,7 @@ export const mockData: UserData[] = [
     domicilio: 'Calle Central 789, Monterrey',
     telefono: '818-9012',
     solicitud: 'Baja de vehículo',
+    apoyo: 'Despensas',
     horaYFecha: '2023-12-17 09:15',
     estatus: 'Cancelado',
     nota: 'Solicitante no se presentó',
@@ -104,6 +112,7 @@ export const mockData: UserData[] = [
     domicilio: 'Av. Reforma 321, Puebla',
     telefono: '222-3456',
     solicitud: 'Trámite de pasaporte',
+    apoyo: 'Despensas',
     horaYFecha: '2024-11-18 11:00',
     estatus: 'Pendiente',
     nota: 'Pasaporte entregado',
@@ -115,6 +124,7 @@ export const mockData: UserData[] = [
     domicilio: 'Calle 123, Ciudad de México',
     telefono: '555-1234',
     solicitud: 'Renovación de licencia',
+    apoyo: 'Despensas',
     horaYFecha: '2024-07-15 10:30',
     estatus: 'Recibido',
     nota: 'Documentos completos',
@@ -126,6 +136,7 @@ export const mockData: UserData[] = [
     domicilio: 'Av. Principal 456, Guadalajara',
     telefono: '333-5678',
     solicitud: 'Cambio de domicilio',
+    apoyo: 'Despensas',
     horaYFecha: '2024-02-16 14:45',
     estatus: 'Cancelado',
     nota: 'Falta comprobante de domicilio',
@@ -137,6 +148,7 @@ export const mockData: UserData[] = [
     domicilio: 'Calle Central 789, Monterrey',
     telefono: '818-9012',
     solicitud: 'Baja de vehículo',
+    apoyo: 'Despensas',
     horaYFecha: '2023-12-17 09:15',
     estatus: 'Cancelado',
     nota: 'Solicitante no se presentó',
@@ -148,6 +160,7 @@ export const mockData: UserData[] = [
     domicilio: 'Av. Reforma 321, Puebla',
     telefono: '222-3456',
     solicitud: 'Trámite de pasaporte',
+    apoyo: 'Despensas',
     horaYFecha: '2024-11-18 11:00',
     estatus: 'Pendiente',
     nota: 'Pasaporte entregado',

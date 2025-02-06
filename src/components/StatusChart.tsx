@@ -119,8 +119,8 @@ export function StatusChart({ data }: StatusChartProps) {
               data={chartData}
               cx="50%"
               cy="50%"
-              innerRadius={80}
-              outerRadius={120}
+              innerRadius={90}
+              outerRadius={150}
               fill="#8884d8"
               dataKey="value"
               onMouseEnter={onPieEnter}
@@ -201,7 +201,7 @@ export function StatusChart({ data }: StatusChartProps) {
   return (
     <Card className="dark:bg-gray-800">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="pl-2 dark:text-white">Estatus de Solicitudes</CardTitle>
+        <CardTitle className="pl-2 dark:text-white text-lg">Estatus de Solicitudes</CardTitle>
         <ChartSelector value={chartType} onChange={setChartType} />
       </CardHeader>
       <CardContent>

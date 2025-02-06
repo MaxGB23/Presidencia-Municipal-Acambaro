@@ -1,0 +1,143 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Departamento {
+  id          String   @id @default(cuid())
+  departamento String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  usuarios User[] // Relación 1-N (Un departamento tiene varios usuarios)
+}
+
+model User {
+  id            String          @id @default(cuid())
+  name          String?
+  lastname      String?
+  email         String          @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  Authenticator Authenticator[]
+  permisos      String? 
+  departamento_id String? 
+  departamento   Departamento? @relation(fields: [departamento_id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relación 1-N: Un usuario puede crear varias solicitudes
+  solicitudesCreadas Solicitudes[] @relation("UserCreatedBy")
+
+  // Relación 1-N: Un usuario puede actualizar varias solicitudes
+  solicitudesActualizadas Solicitudes[] @relation("UserUpdatedBy")
+}
+
+model Solicitudes {
+  id        String   @id @default(cuid())
+  curp      String
+  nombre    String
+  domicilio String
+  solicitud String?
+  apoyo_id  String
+  fecha     DateTime?
+  estatus_id String // Clave foránea obligatoria
+  nota      String?
+  createdBy String
+  updatedBy String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones correctas con User (1-N)
+  creador User @relation("UserCreatedBy", fields: [createdBy], references: [id])
+  actualizador User? @relation("UserUpdatedBy", fields: [updatedBy], references: [id])
+
+  // Relación con Apoyos (1-N)
+  apoyo Apoyos @relation(fields: [apoyo_id], references: [id])
+
+  // Relación con Estatus (1-N)
+  estatus Estatus @relation(fields: [estatus_id], references: [id])
+}
+
+model Apoyos {
+  id          String   @id @default(cuid())
+  apoyo       String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relación con Solicitudes (1-N)
+  solicitudes Solicitudes[]
+}
+
+model Estatus {
+  id        String   @id @default(cuid())
+  estatus   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relación con Solicitudes (1-N)
+  solicitudes Solicitudes[]
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+// Optional for WebAuthn support
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, credentialID])
+}

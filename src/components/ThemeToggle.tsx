@@ -7,7 +7,7 @@ export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <div className="flex items-center gap-4 p-2 bg-white dark:bg-gray-900 rounded-lg shadow-md">
+    <div className="flex items-center gap-4 p-2 bg-white dark:bg-gray-900 rounded-lg border-b-2">
       <Sun className="h-5 w-5" fill="currentColor" /> {/* Ícono de sol */}
       <Switch
         checked={theme === 'dark'}
