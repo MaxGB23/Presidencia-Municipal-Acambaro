@@ -3,6 +3,9 @@ import React from 'react';
 import Input from '@/components/ui/login/Input';
 import Button from '@/components/ui/login/Button';
 import Combobox from '@/components/ui/login/ComboBox';
+import { Circle, CircleX, House, UserRoundPlus } from "lucide-react"
+import Link from 'next/link';
+
 
 const departamentos = [
   { value: "contralor", label: "Contraloría" },
@@ -18,10 +21,21 @@ const permisos = [
 const Register: React.FC = () => (
   <div className='flex justify-center items-center min-h-screen bg-gray-100 p-6'>
     <div className="w-full max-w-[1100px] lg:h-[640px] rounded-lg shadow-lg overflow-hidden bg-white text-black pt-12">
-      {/* Título del formulario */}
-      <h1 className="text-3xl lg:text-4xl font-bold text-gray-800 pl-10 mb-2">
-        Crear Usuario
-      </h1>
+      <div className="flex items-center justify-between px-10 ">
+        <div className="flex gap-x-4">
+          {/* Título del formulario */}
+          <h1 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-2">
+            Crear Usuario
+          </h1>
+          <UserRoundPlus className="mb-2 size-7 lg:size-9" />
+        </div>
+        
+        <Link href={"/"}>
+          <CircleX className="mb-3 size-7 lg:size-9 text-red-600 hover:text-red-700" />
+
+        </Link>
+      
+      </div>
 
       <div className="flex flex-col lg:flex-row w-full">
         {/* Parte izquierda del formulario */}

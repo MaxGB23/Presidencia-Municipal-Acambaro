@@ -269,7 +269,7 @@ export default function Dashboard() {
               <div className="flex justify-end space-x-2 mt-4">
                 <button
                   type="button"
-                  className="bg-gray-50 hover:bg-gray-200 border border-gray-300 text-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 font-semibold py-2 px-4 rounded-full "
+                  className="bg-gray-50 hover:bg-gray-100 border border-gray-300 text-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 font-semibold py-2 px-4 rounded-full "
                   onClick={closeModal}
                 >
                   Cancelar
@@ -285,9 +285,6 @@ export default function Dashboard() {
           </div>
         </div>
       )}
-
-
-
     </div>
   );
 }
