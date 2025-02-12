@@ -1,13 +1,12 @@
 'use client'
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/DataTable"
 import { StatusChart } from "@/components/StatusChart"
 import Sidebar3 from "@/components/Sidebar3"
 import { mockData } from "../utils/data"
 import Navbar from "@/components/Navbar";
-import { Pencil, CirclePlus, Trash, CircleX } from "lucide-react"
+import { Pencil, CirclePlus, CircleX } from "lucide-react"
 
 export default function Dashboard() {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,7 +34,6 @@ export default function Dashboard() {
   const handleSearchChange = (value: React.SetStateAction<string>) => {
     setSearchValue(value);
   };
-
   // const handleEdit = (item) => {
   //   console.log("Editar:", item);
   // };
@@ -43,7 +41,6 @@ export default function Dashboard() {
   // const handleDelete = (item) => {
   //   console.log("Eliminar:", item);
   // };
-
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar3 isOpen={isOpen} />
@@ -101,13 +98,13 @@ export default function Dashboard() {
               <CardTitle className="text-lg pl-2 pr-3">Tabla de Solicitudes</CardTitle>
               <div className="flex justify-end space-x-2">
                 <button
-                  className="flex bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-full"
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-full"
                   onClick={openModal} // Abrir modal al hacer clic
                 >
-                  <CirclePlus className="" />                                 
+                  <CirclePlus/>                                 
                 </button>
                 <button
-                  className={`flex justify-center text-white font-bold py-3 px-4 rounded-full ${!isEditing
+                  className={` text-white font-bold py-3 px-4 rounded-full ${!isEditing
                       ? "bg-blue-500 hover:bg-blue-700" // Estilos para el modo "Editar"
                       : "bg-red-500 hover:bg-red-700"   // Estilos para el modo "Cancelar"
                     }`}
@@ -129,7 +126,6 @@ export default function Dashboard() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-11/12 md:w-1/2 lg:w-3/4 shadow-lg">
             <h2 className="text-2xl font-bold mb-4 dark:text-white text-gray-800">Agregar Solicitud</h2>
-
             {/* Formulario de agregar solicitud */}
             <form>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -141,7 +137,7 @@ export default function Dashboard() {
                   <input
                     type="text"
                     name="nombre"
-                    className="w-full p-2 border border-gray-300 dark:border-gray-900 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
+                    className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
                     placeholder="Nombre"
                     required
                   />
@@ -155,7 +151,7 @@ export default function Dashboard() {
                   <input
                     type="text"
                     name="curp"
-                    className="w-full p-2 border border-gray-300 dark:border-gray-900 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
+                    className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
                     placeholder="CURP"
                     required
                   />
@@ -169,7 +165,7 @@ export default function Dashboard() {
                   <input
                     type="text"
                     name="domicilio"
-                    className="w-full p-2 border border-gray-300 dark:border-gray-900 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
+                    className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
                     placeholder="Domicilio"
                     required
                   />
@@ -183,7 +179,7 @@ export default function Dashboard() {
                   <input
                     type="text"
                     name="telefono"
-                    className="w-full p-2 border border-gray-300 dark:border-gray-900 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
+                    className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
                     placeholder="Teléfono"
                     required
                   />
@@ -197,7 +193,7 @@ export default function Dashboard() {
                   <textarea
                     rows={1}
                     name="solicitud"
-                    className="w-full p-2 border border-gray-300 dark:border-gray-900 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
+                    className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
                     placeholder="Detalles de la solicitud"
                     required
                   ></textarea>
@@ -210,16 +206,16 @@ export default function Dashboard() {
                   </label>
                   <select
                     name="apoyo"
-                    className="w-full p-2 border border-gray-300 dark:border-gray-900 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
+                    className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
                     required
                     defaultValue=""
                   >
                     <option value="" disabled>Seleccione un tipo de apoyo</option>
-                    <option value="despensas">Despensas</option>
-                    <option value="funerarios">Funerarios</option>
-                    <option value="concentradores">Concentradores</option>
-                    <option value="medicamento">Medicamento</option>
-                    <option value="vales_gasolina">Vales de Gasolina</option>
+                    <option value="Despensas">Despensas</option>
+                    <option value="Funerarios">Funerarios</option>
+                    <option value="Concentradores">Concentradores</option>
+                    <option value="Medicamento">Medicamento</option>
+                    <option value="Vales de Gasolina">Vales de Gasolina</option>
                   </select>
 
                 </div>
@@ -229,7 +225,7 @@ export default function Dashboard() {
                   <input
                     type="datetime-local"
                     name="hora_fecha"
-                    className="w-full p-2 border border-gray-300 dark:border-gray-900 rounded dark:bg-gray-700 dark:text-gray-300 appearance-none"
+                    className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded dark:bg-gray-700 dark:text-gray-300 appearance-none"
                   />
 
                 </div>
@@ -241,7 +237,7 @@ export default function Dashboard() {
                   </label>
                   <select
                     name="estatus"
-                    className="w-full p-2 border border-gray-300 dark:border-gray-900 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
+                    className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
                     required
                     defaultValue=""
                   >
@@ -259,7 +255,7 @@ export default function Dashboard() {
                   <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Nota</label>
                   <textarea
                     name="nota"
-                    className="w-full p-2 border dark:border-gray-900 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
+                    className="w-full p-2 border dark:border-gray-700 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
                     placeholder="Notas adicionales"
                   ></textarea>
                 </div>
@@ -269,7 +265,7 @@ export default function Dashboard() {
               <div className="flex justify-end space-x-2 mt-4">
                 <button
                   type="button"
-                  className="bg-gray-50 hover:bg-gray-100 border border-gray-300 text-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 font-semibold py-2 px-4 rounded-full "
+                  className="bg-white hover:bg-gray-200 border border-gray-400 text-gray-700 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 font-semibold py-2 px-4 rounded-full "
                   onClick={closeModal}
                 >
                   Cancelar

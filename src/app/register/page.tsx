@@ -84,7 +84,7 @@ const Register: React.FC = () => (
       </div>
       {/* Botón centrado entre las dos columnas */}
       <div className="flex justify-center">
-        <Button className="w-1/2 mb-6" text="Registrar Usuario" />
+        <Button className="mb-6 mx-60" text="Registrar Usuario" />
       </div>
     </div>
   </div>

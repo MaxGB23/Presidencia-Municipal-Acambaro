@@ -41,7 +41,7 @@ const SearchComponent: React.FC<SearchComponentProps> = ({ modelValue, onChange 
                     type="text"
                     id="search"
                     autoComplete="off"
-                    className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-gray-500 focus:border-gray-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500"
+                    className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-400 rounded-lg bg-gray-50  dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                     placeholder="Buscar"
                     required
                 />

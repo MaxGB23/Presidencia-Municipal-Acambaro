@@ -1,5 +1,5 @@
 'use client'
-import { useState, useCallback } from "react"
+import React, { useState, useCallback } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   PieChart,
@@ -18,7 +18,9 @@ import {
 } from "recharts"
 import { getStatusCounts, type UserData, type Status } from "@/utils/data"
 import { ChartSelector } from "./ChartSelector"
-import { useTheme } from "@/contexts/ThemeContext"
+// import { useTheme } from "@/contexts/ThemeContext"
+import { useTheme } from "next-themes";
+
 
 interface StatusChartProps {
   data: UserData[]
@@ -31,14 +33,7 @@ const COLORS = {
   Concluido: "#3b82f6",
 }
 
-// const handleHover = (data: any, index: number, isHovering: boolean): void => {
-//   // Lógica para cambiar algo dinámicamente en hover
-//   // console.log(`Barra ${index} está ${isHovering ? "activa" : "inactiva"}`);
-// };
-
-
-
-export function StatusChart({ data }: StatusChartProps) {
+export const StatusChart = React.memo(function StatusChart({ data }: StatusChartProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [chartType, setChartType] = useState("bar")
   const statusCounts = getStatusCounts(data)
@@ -211,5 +206,5 @@ export function StatusChart({ data }: StatusChartProps) {
       </CardContent>
     </Card>
   )
-}
+});
 

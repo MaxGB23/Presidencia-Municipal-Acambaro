@@ -1,5 +1,5 @@
 import React from 'react'
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { ModeToggle } from "@/components/ThemeToggle";
 import SearchBar from "@/components/SearchBar";
 import { Menu } from "lucide-react";
 
@@ -10,7 +10,7 @@ interface NavbarProps {
   handleSearchChange: (value: string) => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ toggleSidebar, isOpen, searchValue, handleSearchChange }) => {
+const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, isOpen, searchValue, handleSearchChange }) => {
   
   return (
     <nav className="shadow-md dark:shadow-slate-950 space-x-4 items-center flex sticky top-0 z-50 p-5 bg-white dark:bg-gray-900">
@@ -22,9 +22,9 @@ const Navbar: React.FC<NavbarProps> = ({ toggleSidebar, isOpen, searchValue, han
         <Menu className={`w-6 h-6 ${isOpen ? "rotate-180" : ""}`} />
       </button>
       <SearchBar modelValue={searchValue} onChange={handleSearchChange} />
-      <ThemeToggle />
+      <ModeToggle />
     </nav>
   );
-};
+});
 
 export default Navbar;

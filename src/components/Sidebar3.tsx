@@ -7,7 +7,7 @@ interface SidebarProps {
   isOpen: boolean;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
+const Sidebar: React.FC<SidebarProps> = React.memo(({ isOpen }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const handleMouseEnter = () => {
@@ -41,7 +41,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
         {/* Header */}
         <div className="flex items-center shadow-md p-4 pl-5">
           <div className={`flex items-center ${sidebarOpen ? "space-x-4" : ""}`}>
-            <Image src="/images/User.png" alt="Usuario" width="40" height="40" />
+            <Image src="/images/User.png" alt="Usuario" width={40} height={40} />
             <div
               className={`overflow-hidden transition-[width,opacity] ${sidebarOpen ? "w-32 opacity-100 duration-500" : "w-0 opacity-0 duration-0"
                 }`}
@@ -87,6 +87,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
       </div>
     </div>
   );
-};
+});
 
 export default Sidebar;
