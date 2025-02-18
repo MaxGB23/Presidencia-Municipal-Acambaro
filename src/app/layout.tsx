@@ -1,7 +1,11 @@
+"use client";
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 // import { ThemeProvider } from "@/contexts/ThemeContext";
+import { SessionProvider } from "next-auth/react";
+
 import { ThemeProvider } from "@/components/theme-provider"
 
 
@@ -17,10 +21,10 @@ const geistMono = Geist_Mono({
 
 
 
-export const metadata: Metadata = {
-  title:  "Apoyos",
-  description: "Presidencia Municipal de Acámbaro",
-};
+// export const metadata: Metadata = {
+//   title:  "Apoyos",
+//   description: "Presidencia Municipal de Acámbaro",
+// };
 
 export default function RootLayout({
   children,
@@ -28,6 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <SessionProvider>
     <html lang="en" suppressHydrationWarning>   
       <title>Apoyos</title>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
@@ -41,5 +46,6 @@ export default function RootLayout({
         </ThemeProvider>
       </body>
     </html>
+    </SessionProvider>
   );
 }

@@ -1,0 +1,48 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  name       String?
+  lastname   String?
+  email      String    @unique
+  image      String?
+  permisos   String? 
+  departamento_id String? 
+  password   String
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relación 1-N: Un usuario puede crear varias solicitudes
+  solicitudesCreadas Solicitudes[] @relation("UserSolicitudesCreadas")
+
+  // Relación 1-N: Un usuario puede actualizar varias solicitudes
+  solicitudesActualizadas Solicitudes[] @relation("UserSolicitudesActualizadas")
+}
+
+model Solicitudes {
+  id        Int       @id @default(autoincrement())
+  curp      String
+  nombre    String
+  domicilio String
+  solicitud String?
+  apoyo_id  String?
+  fecha     DateTime?
+  estatus_id String
+  nota      String?
+  createdBy Int       
+  updatedBy Int?      
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // Relaciones corregidas con User
+  creador User @relation("UserSolicitudesCreadas", fields: [createdBy], references: [id])
+  actualizador User? @relation("UserSolicitudesActualizadas", fields: [updatedBy], references: [id])
+}

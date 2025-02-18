@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -22,18 +20,18 @@ interface ComboboxProps {
   options: { value: string; label: string }[];
   label?: string;
   placeholder?: string;
-  onSelect?: (value: string) => void;
+  value: string; // El valor ahora viene desde el formulario
+  onChange: (value: string) => void; // Usamos `onChange` en lugar de `onSelect`
+  error?: string;
 }
 
-export default function Combobox({ options, label, placeholder, onSelect}: ComboboxProps) {
+export default function Combobox({ options, label, placeholder, value, onChange, error }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
 
   const handleSelect = (selectedValue: string) => {
     const newValue = selectedValue === value ? "" : selectedValue;
-    setValue(newValue);
+    onChange(newValue); // Actualizamos el valor en el formulario
     setOpen(false);
-    if (onSelect) onSelect(newValue);
   };
 
   return (
@@ -51,17 +49,9 @@ export default function Combobox({ options, label, placeholder, onSelect}: Combo
             <ChevronsUpDown className="ml-2 h-5 w-5 shrink-0 text-gray-500" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent
-          className={cn(
-            "p-0 mt-2 rounded-lg shadow-lg bg-white border border-gray-200 ",
-
-          )}
-        >
+        <PopoverContent className="p-0 mt-2 rounded-lg shadow-lg bg-white border border-gray-200">
           <Command className="dark:bg-white dark:text-black">
-            <CommandInput
-              placeholder="Buscar..."
-              className="px-3 py-2 text-sm text-gray-700 border-b border-gray-300 focus:outline-none"
-            />
+            <CommandInput placeholder="Buscar..." className="px-3 py-2 text-sm text-gray-700 border-b border-gray-300 focus:outline-none" />
             <CommandList>
               <CommandEmpty className="text-gray-500 text-sm p-2 justify-center flex">No se encontraron resultados.</CommandEmpty>
               <CommandGroup>
@@ -71,18 +61,11 @@ export default function Combobox({ options, label, placeholder, onSelect}: Combo
                     value={option.value}
                     onSelect={() => handleSelect(option.value)}
                     className={cn(
-                      "flex items-center px-3 py-2 text-md text-gray-700 cursor-pointer transition-all ease-in-out dark:bg-white dark:text-black",
-                      value === option.value
-                        ? "bg-indigo-100 text-indigo-700"
-                        : "hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-100 dark:hover:text-gray-900"
+                      "flex items-center px-3 py-2 text-md text-gray-700 cursor-pointer transition-all ease-in-out dark:bg-white dark:text-black dark:hover:bg-indigo-50 ",
+                      value === option.value ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-100 dark:text-indigo-700" : "hover:bg-gray-100 hover:text-gray-900"
                     )}
                   >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        value === option.value ? "opacity-100 text-indigo-500" : "opacity-0"
-                      )}
-                    />
+                    <Check className={cn("mr-2 h-4 w-4", value === option.value ? "opacity-100 text-indigo-500" : "opacity-0")} />
                     {option.label}
                   </CommandItem>
                 ))}
@@ -91,6 +74,7 @@ export default function Combobox({ options, label, placeholder, onSelect}: Combo
           </Command>
         </PopoverContent>
       </Popover>
+      {error && <span className='text-red-600 pl-2 absolute mt-[85px] lg:mt-24'>{error}</span>}
     </div>
   );
 }

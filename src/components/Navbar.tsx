@@ -13,7 +13,7 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, isOpen, searchValue, handleSearchChange }) => {
   
   return (
-    <nav className="shadow-md dark:shadow-slate-950 space-x-4 items-center flex sticky top-0 z-50 p-5 bg-white dark:bg-gray-900">
+    <nav className="shadow-md dark:shadow-slate-950 space-x-4 items-center flex sticky top-0 z-50 p-5 bg-gray-50 dark:bg-gray-900">
       <button
         aria-label="Toggle Sidebar"
         onClick={toggleSidebar}

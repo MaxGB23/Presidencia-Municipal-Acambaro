@@ -118,6 +118,8 @@ body {
   }
 }
 
+
+
 @layer base {
   * {
     @apply border-border;
@@ -132,3 +134,47 @@ color: #1f2937;
 color: #ffffff;
 color: #0072ff
 }
+.dark .input-autocomplete-dark:-webkit-autofill,
+.dark .input-autocomplete-dark:-webkit-autofill:hover,
+.dark .input-autocomplete-dark:-webkit-autofill:focus,
+.dark .input-autocomplete-dark:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px rgb(241, 249, 253) inset !important; /* Fondo blanco */
+  -webkit-text-fill-color: #000000 !important; /* Texto negro */
+  color: #000000 !important;
+  caret-color: #000000 !important; /* Color del cursor */
+}
+.dark .input-autocomplete-dark:-moz-autofill,
+.dark .input-autocomplete-dark:-moz-autofill:hover,
+.dark .input-autocomplete-dark:-moz-autofill:focus,
+.dark .input-autocomplete-dark:-moz-autofill:active {
+  background-color: rgb(241, 253, 253) !important;
+  color: #000000 !important;
+  appearance: none;
+}
+
+
+/* Estilo general de la barra de desplazamiento */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Fondo de la barra de desplazamiento */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color claro */
+  border-radius: 4px;
+}
+
+/* Color del "thumb" (la parte que se mueve) */
+::-webkit-scrollbar-thumb {
+  background: #d1d1d1; /* Color gris claro */
+  border-radius: 4px;
+}
+
+/* Cambia el color del thumb al pasar el mouse */
+::-webkit-scrollbar-thumb:hover {
+  background: #bfbfbf;
+}
+
+@layer base { img { display: initial; } }
+
+
