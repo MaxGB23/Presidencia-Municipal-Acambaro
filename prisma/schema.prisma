@@ -32,17 +32,18 @@ model Solicitudes {
   curp      String
   nombre    String
   domicilio String
+  telefono  String?
   solicitud String?
   apoyo_id  String?
   fecha     DateTime?
   estatus_id String
   nota      String?
   createdBy Int       
-  updatedBy Int?      
+  updatedBy Int      
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
   // Relaciones corregidas con User
   creador User @relation("UserSolicitudesCreadas", fields: [createdBy], references: [id])
-  actualizador User? @relation("UserSolicitudesActualizadas", fields: [updatedBy], references: [id])
+  actualizador User @relation("UserSolicitudesActualizadas", fields: [updatedBy], references: [id])
 }

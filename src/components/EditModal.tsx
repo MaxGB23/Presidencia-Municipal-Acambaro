@@ -1,4 +1,6 @@
+import { updateSolicitud } from '@/actions/actions';
 import { Asterisk } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
 
 interface UserData {
@@ -9,28 +11,36 @@ interface UserData {
   telefono: string;
   solicitud: string;
   apoyo: string;
-  horaYFecha: string;
+  fecha: string;
   estatus: string;
   nota: string;
 }
 
 interface EditModalProps {
   editingRow: UserData;
-  onSave: (updatedRow: UserData) => void;
   onClose: () => void;
+  onSave: (updatedRow: UserData) => void;
 }
 
-export const EditModal: React.FC<EditModalProps> = ({ editingRow, onSave, onClose }) => {
+export const EditModal: React.FC<EditModalProps> = ({ editingRow, onClose, onSave }) => {
   const [formData, setFormData] = useState<UserData>(editingRow);
+  const { data: session } = useSession();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    const formDataToSend = new FormData(e.currentTarget as HTMLFormElement);
+    await updateSolicitud(formDataToSend, session?.user.id, editingRow.id);
+
+    onSave({ ...editingRow, ...Object.fromEntries(formDataToSend) }); // Actualiza estado en MainPage
+    onClose();
   };
 
   return (
@@ -146,9 +156,9 @@ export const EditModal: React.FC<EditModalProps> = ({ editingRow, onSave, onClos
               </label>
               <input
                 type="datetime-local"
-                name="horaYFecha"
+                name="fecha"
                 className="w-full p-4 border border-gray-300 dark:border-gray-700 rounded-xl dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
-                value={formData.horaYFecha}
+                value={formData.fecha}
                 onChange={handleChange}
                 required
               />
@@ -188,7 +198,7 @@ export const EditModal: React.FC<EditModalProps> = ({ editingRow, onSave, onClos
           <div className="flex justify-end space-x-2 mt-4">
             <button
               type="button"
-              className="bg-white hover:bg-gray-200 border border-gray-400 text-gray-700 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 font-semibold py-2 px-4 rounded-full"
+              className="bg-white hover:bg-gray-100 border border-gray-400 text-gray-700 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 font-semibold py-2 px-4 rounded-full"
               onClick={onClose}
             >
               Cancelar

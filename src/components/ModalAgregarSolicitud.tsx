@@ -1,22 +1,43 @@
 import { Asterisk } from 'lucide-react';
-import React from 'react';
+import { createSolicitud } from '@/actions/actions';
+import { useSession } from 'next-auth/react'; // Importar useSession
 
 interface ModalAgregarSolicitudProps {
   isModalOpen: boolean;
   closeModal: () => void;
+  onAdd: () => void;
 }
 
-const ModalAgregarSolicitud: React.FC<ModalAgregarSolicitudProps> = ({ isModalOpen, closeModal }) => {
-  if (!isModalOpen) return null;
+const ModalAgregarSolicitud: React.FC<ModalAgregarSolicitudProps> = ({ isModalOpen, closeModal, onAdd }) => {
+  const { data: session } = useSession(); // Obtener la sesión del usuario
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+
+    // Llama a createSolicitud primero
+    await createSolicitud(formData, session?.user.id);
+
+    // Luego cierra el modal y actualiza la lista en MainPage
+    closeModal();
+    onAdd();
+  };
+
+  if (!isModalOpen) return null;
+  // const router = useRouter();
+
+  // const handleSubmit = async (e: React.FormEvent) => {   
+  //   closeModal();
+  //   console.log("Redirect");
+  // };
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 overflow-y-auto">
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-11/12 lg:w-3/4 shadow-lg max-h-[90vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4 dark:text-white text-gray-800 ml-1">Agregar Solicitud</h2>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Campos del formulario */}
-            <div>
+            <div> 
               <label className="flex ml-2 text-base font-medium mb-2 text-gray-700 dark:text-gray-300">
                 Nombre <Asterisk className="text-red-500 size-[11px] mt-1" />
               </label>
@@ -110,7 +131,7 @@ const ModalAgregarSolicitud: React.FC<ModalAgregarSolicitudProps> = ({ isModalOp
               </label>
               <input
                 type="datetime-local"
-                name="horaYFecha"
+                name="fecha"
                 className="w-full p-4 border border-gray-300 dark:border-gray-700 rounded-xl dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
                 required
               />
@@ -146,7 +167,7 @@ const ModalAgregarSolicitud: React.FC<ModalAgregarSolicitudProps> = ({ isModalOp
           <div className="flex justify-end space-x-2 mt-4">
             <button
               type="button"
-              className="bg-white hover:bg-gray-200 border border-gray-400 text-gray-700 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 font-semibold py-2 px-4 rounded-full"
+              className="bg-white hover:bg-gray-100 border border-gray-400 text-gray-700 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 font-semibold py-2 px-4 rounded-full"
               onClick={closeModal}
             >
               Cancelar

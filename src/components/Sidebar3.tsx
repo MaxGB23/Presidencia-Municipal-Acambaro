@@ -20,8 +20,7 @@ const Sidebar: React.FC<SidebarProps> = React.memo( ({ isOpen }) => {
     await signOut({ redirect: false }); // Evita la pantalla de confirmación
     router.push("/auth/login"); // Redirige manualmente al login
   };
-  // imprimir sesion del usuario
-  console.log("hola", session);
+
 
   const [isHovered, setIsHovered] = useState(false);
 

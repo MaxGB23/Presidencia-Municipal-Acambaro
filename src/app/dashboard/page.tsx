@@ -1,49 +1,122 @@
 'use client'
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DataTable } from "@/components/DataTable"
 import { StatusChart } from "@/components/StatusChart"
 import Sidebar3 from "@/components/Sidebar3"
-import { mockData } from "../../utils/data"
+import { mockData, UserData } from "@/utils/data"
 import Navbar from "@/components/Navbar";
-import { Pencil, CirclePlus, CircleX, CheckCircle, XCircle, Hourglass, ClipboardCheck, Users } from "lucide-react"
+import { Pencil, CirclePlus, CircleX } from "lucide-react"
 import { useSession } from "next-auth/react";
 import SolicitudesCards from "@/components/SolicitudesCards";
 import ModalAgregarSolicitud from "@/components/ModalAgregarSolicitud";
-
+import { deleteSolicitud } from "@/actions/actions";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Dashboard() {  
-  const [isOpen, setIsOpen] = useState(false);
-  const toggleSidebar = () => setIsOpen(!isOpen);
-  // const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar el modal
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false); // Estado para controlar la edición
+  // const [isOpen, setIsOpen] = useState(false);
+  // const toggleSidebar = () => setIsOpen(!isOpen);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isEditing, setIsEditing] = useState(false); // Estado para controlar la edición
+  // const [solicitudes, setSolicitudes] = useState<UserData[]>([]);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
 
   // const openModal = () => setIsModalOpen(true);
-  // const closeModal = () => setIsModalOpen(false);
+  // const closeModal = () => setIsModalOpen(false); 
 
-  const totalSolicitudes = mockData.length;
-  const solicitudesRecibidas = mockData.filter(item => item.estatus === 'Recibido').length;
-  const solicitudesPendientes = mockData.filter(item => item.estatus === 'Pendiente').length;
-  const solicitudesCanceladas = mockData.filter(item => item.estatus === 'Cancelado').length;
-  const solicitudesConcluidas = mockData.filter(item => item.estatus === 'Concluido').length;
+  // const totalSolicitudes = mockData.length;
+  // const solicitudesRecibidas = mockData.filter(item => item.estatus === 'Recibido').length;
+  // const solicitudesPendientes = mockData.filter(item => item.estatus === 'Pendiente').length;
+  // const solicitudesCanceladas = mockData.filter(item => item.estatus === 'Cancelado').length;
+  // const solicitudesConcluidas = mockData.filter(item => item.estatus === 'Concluido').length;
 
+  // const [searchValue, setSearchValue] = useState('');
+  // const filteredData = mockData.filter(item =>
+  //   item.nombre.toLowerCase().includes(searchValue.toLowerCase()) ||
+  //   item.curp.toLowerCase().includes(searchValue.toLowerCase()) ||
+  //   item.solicitud.toLowerCase().includes(searchValue.toLowerCase()) ||
+  //   item.telefono.toLowerCase().includes(searchValue.toLowerCase())
+  // );
+
+  // const handleSearchChange = (value: React.SetStateAction<string>) => {
+  //   setSearchValue(value);
+  // };
+  const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const filteredData = mockData.filter(item =>
+  const [solicitudes, setSolicitudes] = useState<UserData[]>([]);
+  const { toast } = useToast()  
+
+  useEffect(() => {
+    const fetchSolicitudes = async () => {
+      try {
+        const data = await mockData();
+        setSolicitudes(data);
+      } catch (error) {
+        console.error('Error al cargar solicitudes:', error);
+      }
+    };  
+
+    fetchSolicitudes();
+  }, []);
+
+  const handleAdd = async () => {
+    const data = await mockData();
+    setSolicitudes(data);       
+    toast({
+      title: "Solicitud Agregada",
+      description: "La solicitud ha sido agregada con éxito",
+      variant: "success", 
+    });
+  };
+
+  const handleEdit = async (updatedRow: UserData) => {
+    setSolicitudes((prev) =>
+      prev.map((s) => (s.id === updatedRow.id ? updatedRow : s))
+    );
+    toast({
+      title: "Solicitud Actualizada",
+      description: "La solicitud ha sido actualizada con éxito",
+      variant: "success", 
+    });
+  };  
+
+  const handleDelete = async (rowId: number) => {
+    const userConfirmed = confirm("¿Estás seguro de eliminar esta solicitud?");
+
+    if (userConfirmed) {
+      await deleteSolicitud(rowId);
+      setSolicitudes((prev) => prev.filter((s) => s.id !== rowId));
+      toast({
+        title: "Solicitud Eliminada",
+        description: "La solicitud ha sido eliminada con éxito",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const totalSolicitudes = solicitudes.length;
+  const solicitudesRecibidas = solicitudes.filter(item => item.estatus === 'Recibido').length;
+  const solicitudesPendientes = solicitudes.filter(item => item.estatus === 'Pendiente').length;
+  const solicitudesCanceladas = solicitudes.filter(item => item.estatus === 'Cancelado').length;
+  const solicitudesConcluidas = solicitudes.filter(item => item.estatus === 'Concluido').length;
+
+  const filteredData = solicitudes.filter(item =>
     item.nombre.toLowerCase().includes(searchValue.toLowerCase()) ||
     item.curp.toLowerCase().includes(searchValue.toLowerCase()) ||
-    item.solicitud.toLowerCase().includes(searchValue.toLowerCase()) ||
-    item.telefono.toLowerCase().includes(searchValue.toLowerCase())
+    item.solicitud?.toLowerCase().includes(searchValue.toLowerCase()) ||
+    item.telefono?.toLowerCase().includes(searchValue.toLowerCase())
   );
 
-  const handleSearchChange = (value: React.SetStateAction<string>) => {
-    setSearchValue(value);
-  };
+  const toggleSidebar = () => setIsOpen(!isOpen);
+  const closeModal = () => setIsModalOpen(false);
+  const handleSearchChange = (value: string) => setSearchValue(value);
+  
   const { data: session, status } = useSession();
   const tienePermisos = session?.user?.permisos !== "Visualizacion";
+  // imprimir sesion del usuario
+  // console.log("Usuario autenticado:", session);
 
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
@@ -59,7 +132,7 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-6 gap-6 mb-6">
             {/* Gráfico de estado */}
             <div className="lg:col-span-4">
-              <StatusChart data={mockData} />
+              <StatusChart data={solicitudes} />
             </div>
             {/* Estadísticas */}
             <SolicitudesCards
@@ -111,11 +184,11 @@ export default function Dashboard() {
               )}
             </CardHeader>
             <CardContent>
-              <DataTable data={filteredData} isEditing={isEditing} />
+              <DataTable data={filteredData} isEditing={isEditing} onEdit={handleEdit} onDelete={handleDelete} />
             </CardContent>
           </Card>
         </div>
       </div>
-      <ModalAgregarSolicitud isModalOpen={isModalOpen} closeModal={closeModal} />    </div>
+      <ModalAgregarSolicitud isModalOpen={isModalOpen} closeModal={closeModal} onAdd={handleAdd} />    </div>
   );
 }

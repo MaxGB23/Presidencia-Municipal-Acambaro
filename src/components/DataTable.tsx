@@ -7,15 +7,36 @@ import { es } from "date-fns/locale";
 import { useState, useEffect } from "react";
 import PDF from "@/components/PDF";
 import { EditModal } from "./EditModal";
+import { deleteSolicitud } from "@/actions/actions";
+import { useRouter } from "next/navigation";
 
 interface DataTableProps {
   data: UserData[];
   isEditing: boolean;
+  onEdit: (updatedRow: UserData) => void;
+  onDelete: (rowId: number) => void;
 }
 
-export function DataTable({ data, isEditing }: DataTableProps) {
+export function DataTable({ data, isEditing, onEdit, onDelete }: DataTableProps) {
   const [editingRow, setEditingRow] = useState<UserData | null>(null);
   const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
+  
+
+  // const handleDeleteClick = async (row: any) => {
+  //   const userConfirmed = confirm("¿Estás seguro de eliminar esta solicitud?");
+
+  //   if (userConfirmed) {
+  //     deleteSolicitud(row);
+  //     console.log("Solicitud eliminada", row);
+  //     // refresh esperando 3 segundos
+  //     await new Promise((resolve) => setTimeout(resolve, 3000));
+  //     setSolicitudes((prevSolicitudes) => prevSolicitudes.filter(s => s.id !== rowId));
+
+  //     console.log("Solicitud eliminada y estado actualizado", rowId);
+      
+  //   }
+  // };
 
   useEffect(() => {
     setIsClient(true);
@@ -25,27 +46,14 @@ export function DataTable({ data, isEditing }: DataTableProps) {
     setEditingRow(row);
   };
 
-  const handleSaveEdit = (updatedRow: UserData) => {
-    console.log("Guardando cambios:", updatedRow);
-    setEditingRow(null); // Cierra el modal
-  };
+const handleSaveEdit = (updatedRow: UserData) => {
+  onEdit(updatedRow);  // Actualiza la lista en MainPage
+  setEditingRow(null);
+};
 
   const handleCloseEditModal = () => {
     setEditingRow(null);
   };
-
-  // const handleSaveEdit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   if (editingRow) {
-  //     try {
-  //       // Aquí puedes hacer una llamada a la API para guardar los cambios
-  //       console.log("Guardando cambios:", editingRow);
-  //       handleCloseEditModal(); // Cierra el modal después de guardar
-  //     } catch (error) {
-  //       console.error("Error al guardar los cambios:", error);
-  //     }
-  //   }
-  // };
 
   async function generatePDF(row: UserData) {
     try {
@@ -90,8 +98,8 @@ export function DataTable({ data, isEditing }: DataTableProps) {
             <TableHead>SOLICITUD</TableHead>
             <TableHead>FECHA Y HORA</TableHead>
             <TableHead>ESTATUS</TableHead>
-            <TableHead>NOTA</TableHead>
-            <TableHead>MODIFICADO</TableHead>
+            <TableHead className="text-center">NOTA</TableHead>
+            <TableHead className="text-center w-12 pr-4 pl-0">MODIFICADO</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -127,7 +135,7 @@ export function DataTable({ data, isEditing }: DataTableProps) {
                     </button>
 
                     <button
-                      onClick={() => console.log("Eliminar:", row.id)}
+                      onClick={() => onDelete(row.id)}
                       className="flex items-center gap-1 text-red-600 hover:text-red-300 dark:text-red-400 dark:hover:text-red-200"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -136,7 +144,7 @@ export function DataTable({ data, isEditing }: DataTableProps) {
                         <path d="M10 11v6m4-6v6" />
                       </svg>
                     </button>
-
+ 
                   </div>
                 </TableCell>
               )}
@@ -154,10 +162,10 @@ export function DataTable({ data, isEditing }: DataTableProps) {
               <TableCell>
                 <div className="flex flex-col gap-1">
                   <span>
-                    {format(new Date(row.horaYFecha), "dd 'de' MMMM 'de' yyyy, hh:mm a", { locale: es })}
+                    {format(new Date(row.fecha), "dd 'de' MMMM 'de' yyyy, hh:mm a", { locale: es })}                   
                   </span>
                   <span className="text-gray-500 dark:text-gray-400 text-sm">
-                    {formatDistanceToNow(new Date(row.horaYFecha), { addSuffix: true, locale: es })}
+                    {formatDistanceToNow(new Date(row.fecha), { addSuffix: true, locale: es })}
                   </span>
                 </div>
               </TableCell>
@@ -167,10 +175,10 @@ export function DataTable({ data, isEditing }: DataTableProps) {
                 </span>
               </TableCell>
               <TableCell className="max-w-[200px]">{row.nota}</TableCell>
-              <TableCell className="pr-4 justify-center ">
-                <span className="whitespace-break-spaces">Atención a Delegados</span>
-                <br />
-                <span className="text-xs text-gray-400">12 Nov 2022</span>
+              <TableCell className="text-left">
+                  <span className="whitespace-break-spaces">{row.updatedBy.departamento_id}</span>
+                  <br />
+                  <span className="text-xs text-gray-400 ">{row.updatedAt}</span>
               </TableCell>
             </TableRow>
           ))}
@@ -185,195 +193,7 @@ export function DataTable({ data, isEditing }: DataTableProps) {
           onSave={handleSaveEdit}
           onClose={handleCloseEditModal}
         />
-        // <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        //   <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-11/12 md:w-1/2 lg:w-3/4 shadow-lg">
-        //     <h2 className="text-2xl font-bold mb-4 dark:text-white text-gray-800">Editar Solicitud</h2>
-        //     <form onSubmit={handleSaveEdit}>
-        //       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        //         {/* Nombre */}
-        //         <div>
-        //           <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-        //             Nombre <span className="text-red-500">*</span>
-        //           </label>
-        //           <input
-        //             type="text"
-        //             name="nombre"
-        //             className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
-        //             placeholder="Nombre"
-        //             value={editingRow.nombre}
-        //             onChange={(e) =>
-        //               setEditingRow({ ...editingRow, nombre: e.target.value })
-        //             }
-        //             required
-        //           />
-        //         </div>
-
-        //         {/* CURP */}
-        //         <div>
-        //           <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-        //             CURP <span className="text-red-500">*</span>
-        //           </label>
-        //           <input
-        //             type="text"
-        //             name="curp"
-        //             className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
-        //             placeholder="CURP"
-        //             value={editingRow.curp}
-        //             onChange={(e) =>
-        //               setEditingRow({ ...editingRow, curp: e.target.value })
-        //             }
-        //             required
-        //           />
-        //         </div>
-
-        //         {/* Domicilio */}
-        //         <div>
-        //           <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-        //             Domicilio <span className="text-red-500">*</span>
-        //           </label>
-        //           <input
-        //             type="text"
-        //             name="domicilio"
-        //             className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
-        //             placeholder="Domicilio"
-        //             value={editingRow.domicilio}
-        //             onChange={(e) =>
-        //               setEditingRow({ ...editingRow, domicilio: e.target.value })
-        //             }
-        //             required
-        //           />
-        //         </div>
-
-        //         {/* Teléfono */}
-        //         <div>
-        //           <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-        //             Teléfono <span className="text-red-500">*</span>
-        //           </label>
-        //           <input
-        //             type="text"
-        //             name="telefono"
-        //             className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
-        //             placeholder="Teléfono"
-        //             value={editingRow.telefono}
-        //             onChange={(e) =>
-        //               setEditingRow({ ...editingRow, telefono: e.target.value })
-        //             }
-        //             required
-        //           />
-        //         </div>
-
-        //         {/* Solicitud */}
-        //         <div>
-        //           <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-        //             Solicitud <span className="text-red-500">*</span>
-        //           </label>
-        //           <textarea
-        //             rows={1}
-        //             name="solicitud"
-        //             className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
-        //             placeholder="Detalles de la solicitud"
-        //             value={editingRow.solicitud}
-        //             onChange={(e) =>
-        //               setEditingRow({ ...editingRow, solicitud: e.target.value })
-        //             }
-        //             required
-        //           ></textarea>
-        //         </div>
-
-        //         {/* Tipo de Apoyo */}
-        //         <div>
-        //           <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-        //             Tipo de Apoyo <span className="text-red-500">*</span>
-        //           </label>
-        //           <select
-        //             name="apoyo"
-        //             className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
-        //             value={editingRow.apoyo}
-        //             onChange={(e) =>
-        //               setEditingRow({ ...editingRow, apoyo: e.target.value })
-        //             }
-        //             required
-        //           >
-        //             <option value="Despensas">Despensas</option>
-        //             <option value="Funerarios">Funerarios</option>
-        //             <option value="Concentradores">Concentradores</option>
-        //             <option value="Medicamento">Medicamento</option>
-        //             <option value="Vales de Gasolina">Vales de Gasolina</option>
-        //           </select>
-        //         </div>
-
-        //         {/* Fecha */}
-        //         <div>
-        //           <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-        //             Fecha y Hora <span className="text-red-500">*</span>
-        //           </label>
-        //           <input
-        //             type="datetime-local"
-        //             name="horaYFecha"
-        //             className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
-        //             value={editingRow.horaYFecha}
-        //             onChange={(e) =>
-        //               setEditingRow({ ...editingRow, horaYFecha: e.target.value })
-        //             }
-        //             required
-        //           />
-        //         </div>
-
-        //         {/* Estatus */}
-        //         <div>
-        //           <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-        //             Estatus <span className="text-red-500">*</span>
-        //           </label>
-        //           <select
-        //             name="estatus"
-        //             className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
-        //             value={editingRow.estatus}
-        //             onChange={(e) =>
-        //               setEditingRow({ ...editingRow, estatus: e.target.value })
-        //             }
-        //             required
-        //           >
-        //             <option value="Recibido">Recibido</option>
-        //             <option value="Pendiente">Pendiente</option>
-        //             <option value="Cancelado">Cancelado</option>
-        //             <option value="Concluido">Concluido</option>
-        //           </select>
-        //         </div>
-
-        //         {/* Nota */}
-        //         <div className="md:col-span-2">
-        //           <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Nota</label>
-        //           <textarea
-        //             name="nota"
-        //             className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
-        //             placeholder="Notas adicionales"
-        //             value={editingRow.nota}
-        //             onChange={(e) =>
-        //               setEditingRow({ ...editingRow, nota: e.target.value })
-        //             }
-        //           ></textarea>
-        //         </div>
-        //       </div>
-
-        //       {/* Botones */}
-        //       <div className="flex justify-end space-x-2 mt-4">
-        //         <button
-        //           type="button"
-        //           className="bg-white hover:bg-gray-200 border border-gray-400 text-gray-700 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 font-semibold py-2 px-4 rounded-full"
-        //           onClick={handleCloseEditModal}
-        //         >
-        //           Cancelar
-        //         </button>
-        //         <button
-        //           type="submit"
-        //           className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full"
-        //         >
-        //           Guardar Cambios
-        //         </button>
-        //       </div>
-        //     </form>
-        //   </div>
-        // </div>
+        
       )}
     </>
   );
