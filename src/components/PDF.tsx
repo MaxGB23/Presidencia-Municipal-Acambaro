@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 
 type Props = {
   nombre: string;
@@ -17,7 +16,7 @@ const PDF: React.FC<Props> = ({ nombre, domicilio, solicitud, telefono, id }) =>
       {/* Encabezado */}
       <div className="flex justify-between items-start">
         {/* <Image src="/images/logo4k.jpg" className="mt-20 ml-[58px] rounded-t-full " alt="Logo" width={120} height={120} />         */}
-        <img src="/images/logo4k.jpg" alt="Logo" className="size-32 mt-20 ml-[58px] rounded-t-full " />
+        <img src="/images/logo4k.jpg" alt="Logo" className="size-32 mt-20 ml-14 rounded-t-full " />
         <div className="text-right pt-28 space-y-8">
           <p><span className="font-bold">Acámbaro, Gto.</span>, a {new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}.</p>
           <p className="font-bold">Asunto: Solicitud de Apoyo.</p>
@@ -54,8 +53,7 @@ const PDF: React.FC<Props> = ({ nombre, domicilio, solicitud, telefono, id }) =>
         </p>
       </div>
 
-      {/* Firma */}
-      
+      {/* Firma */}      
       <div className="mt-10 space-y-2">
         <p className="font-bold mb-2 text-lg">ATENTAMENTE</p>
         <p>C. <span className="">{nombre}</span></p>

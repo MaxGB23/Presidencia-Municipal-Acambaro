@@ -31,7 +31,7 @@ export default function Estadisticas() {
         <div className='p-8'>
           <Card>
             <CardHeader>
-              <h1 className='text-2xl'>Estadísticas</h1>
+              <h1 className='text-2xl'>Solicitudes</h1>
             </CardHeader>
             <CardContent>
               {/* Gráficos y estadísticas */}
@@ -54,6 +54,5 @@ export default function Estadisticas() {
         </div>
       </div>
     </div>
-
   )
 }

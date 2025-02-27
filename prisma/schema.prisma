@@ -38,12 +38,12 @@ model Solicitudes {
   fecha     DateTime?
   estatus_id String
   nota      String?
-  createdBy Int       
-  updatedBy Int      
+  createdBy Int?       
+  updatedBy Int?       
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  // Relaciones corregidas con User
-  creador User @relation("UserSolicitudesCreadas", fields: [createdBy], references: [id])
-  actualizador User @relation("UserSolicitudesActualizadas", fields: [updatedBy], references: [id])
+  // Relaciones con User
+  creador User? @relation("UserSolicitudesCreadas", fields: [createdBy], references: [id], onDelete: SetNull)
+  actualizador User? @relation("UserSolicitudesActualizadas", fields: [updatedBy], references: [id], onDelete: SetNull)
 }

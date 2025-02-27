@@ -1,11 +1,9 @@
 "use server";
 import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import bcrypt from "bcrypt";
 
 export async function createSolicitud(formData: FormData, userId: string) {
-  const userIdInt = parseInt(userId, 10);
-  console.log("User ID:", userIdInt); // Log para verificar el userId
+  const userIdInt = parseInt(userId, 10); 
   await prisma.solicitudes.create({
     data: {
       curp: formData.get("curp") as string,
@@ -21,7 +19,7 @@ export async function createSolicitud(formData: FormData, userId: string) {
       updatedBy: userIdInt,
     },
   });
-  
+  console.log("Nueva solicitud creada:", formData, "Creado por User ID:", userIdInt);  
 }
 
 export async function updateSolicitud(
@@ -31,7 +29,6 @@ export async function updateSolicitud(
 ) {
   const userIdInt = parseInt(userId, 10);
   const idInt = parseInt(id, 10);
-
   await prisma.solicitudes.update({
     where: { id: idInt },
     data: {
@@ -47,8 +44,36 @@ export async function updateSolicitud(
       updatedBy: userIdInt,
     },
   });
+  console.log("Datos actualizados:", formData, "Modificado por User ID:", userIdInt);
 }
 
 export async function deleteSolicitud(id: number) {
   await prisma.solicitudes.delete({ where: { id } });
+  console.log("Solicitud no.", id, "eliminada con éxito");
+}
+
+// User Actions
+export async function updateUser(
+  formData: FormData,
+  id: string
+) {
+  const idInt = parseInt(id, 10);
+  await prisma.user.update({
+    where: { id: idInt },
+    data: {
+      name: formData.get("name") as string,
+      lastname: formData.get("lastname") as string,
+      email: formData.get("email") as string,
+      departamento_id: formData.get("departamento_id") as string,
+      permisos: formData.get("permisos") as string,
+      ...(formData.get("password") && {
+      password: await bcrypt.hash(formData.get("password") as string, 10),  
+      }),   
+    },
+  });
+}
+
+export async function deleteUser(id: number) {
+  await prisma.user.delete({ where: { id } });
+  console.log("Usuario no.", id, "eliminado con éxito");
 }

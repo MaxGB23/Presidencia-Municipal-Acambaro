@@ -1,61 +1,81 @@
 'use client';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { type UserData, statusColors } from "@/utils/data";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { statusColors } from "@/utils/data";
 import { FileOutput } from 'lucide-react';
 import { formatDistanceToNow, format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useState, useEffect } from "react";
 import PDF from "@/components/PDF";
 import { EditModal } from "./EditModal";
-import { deleteSolicitud } from "@/actions/actions";
-import { useRouter } from "next/navigation";
 
-interface DataTableProps {
-  data: UserData[];
-  isEditing: boolean;
-  onEdit: (updatedRow: UserData) => void;
-  onDelete: (rowId: number) => void;
+export type Status = "Recibido" | "Pendiente" | "Cancelado" | "Concluido";
+
+interface Solicitud {
+  id: number;
+  curp: string;
+  nombre: string;
+  domicilio: string;
+  telefono: string | null;
+  solicitud: string | null;
+  apoyo: string | null;
+  fecha: string | null;
+  estatus: Status;
+  nota: string | null;
+  updatedBy: string | null;
+  updatedAt: string;
 }
 
-export function DataTable({ data, isEditing, onEdit, onDelete }: DataTableProps) {
-  const [editingRow, setEditingRow] = useState<UserData | null>(null);
-  const [isClient, setIsClient] = useState(false);
+interface DataTableProps {
+  data: Solicitud[];
+  isEditing: boolean;
+  onEdit: (updatedRow: Solicitud) => void;
+  onDelete: (rowId: number) => void;
+  solicitudes: Solicitud[];
+  totalSolicitudes: number;
+  currentPage: number;
+  limit: number;
+
+}
+
+export function DataTable({ data, isEditing, onEdit, onDelete, totalSolicitudes, currentPage, limit }: DataTableProps) {
+  console.log(data);
+
+  const searchParams = useSearchParams();
+  const pathName = usePathname();
   const router = useRouter();
-  
+  const totalPages = Math.ceil(totalSolicitudes / limit);
 
-  // const handleDeleteClick = async (row: any) => {
-  //   const userConfirmed = confirm("¿Estás seguro de eliminar esta solicitud?");
+  const handlePageChange = (page: number) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set('page', page.toString());
+    newSearchParams.set('limit', limit.toString());
+    router.replace(`${pathName}?${newSearchParams.toString()}`);
+  };
 
-  //   if (userConfirmed) {
-  //     deleteSolicitud(row);
-  //     console.log("Solicitud eliminada", row);
-  //     // refresh esperando 3 segundos
-  //     await new Promise((resolve) => setTimeout(resolve, 3000));
-  //     setSolicitudes((prevSolicitudes) => prevSolicitudes.filter(s => s.id !== rowId));
 
-  //     console.log("Solicitud eliminada y estado actualizado", rowId);
-      
-  //   }
-  // };
+  const [editingRow, setEditingRow] = useState<Solicitud | null>(null);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  const handleEditClick = (row: UserData) => {
+  const handleEditClick = (row: Solicitud) => {
     setEditingRow(row);
   };
 
-const handleSaveEdit = (updatedRow: UserData) => {
-  onEdit(updatedRow);  // Actualiza la lista en MainPage
-  setEditingRow(null);
-};
+  const handleSaveEdit = (updatedRow: Solicitud) => {
+    onEdit(updatedRow);  // Actualiza la lista en MainPage
+    setEditingRow(null);
+  };
 
   const handleCloseEditModal = () => {
     setEditingRow(null);
   };
 
-  async function generatePDF(row: UserData) {
+  async function generatePDF(row: Solicitud) {
     try {
       if (typeof window === "undefined") return; // Evita ejecución en SSR
 
@@ -90,24 +110,32 @@ const handleSaveEdit = (updatedRow: UserData) => {
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-gray-200 bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-700">
-            {isEditing && <TableHead>ACCIONES</TableHead>}
-            <TableHead>CURP</TableHead>
+            {isEditing && <TableHead className="text-center pr-4 w-36">ACCIONES</TableHead>}
+            <TableHead className="pl-4">CURP</TableHead>
             <TableHead>NOMBRE</TableHead>
             <TableHead>DOMICILIO</TableHead>
             <TableHead>TELÉFONO</TableHead>
-            <TableHead>SOLICITUD</TableHead>
+            <TableHead className="text-center pr-6">SOLICITUD</TableHead>
             <TableHead>FECHA Y HORA</TableHead>
-            <TableHead>ESTATUS</TableHead>
-            <TableHead className="text-center">NOTA</TableHead>
+            <TableHead className="pl-4">ESTATUS</TableHead>
+            <TableHead className="text-center pr-10">NOTA</TableHead>
             <TableHead className="text-center w-12 pr-4 pl-0">MODIFICADO</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
+          {data.length === 0 && (
+            <TableRow className="dark:bg-gray-800 dark:text-white">
+              <TableCell className="p-7" colSpan={12}>No hay resultados.</TableCell>
+            </TableRow>
+          )}
           {data.map((row) => (
+
+
+
             <TableRow key={row.id} className="dark:bg-slate-800 dark:text-white">
               {isEditing && (
                 <TableCell>
-                  <div className="flex space-x-3 pl-2">
+                  <div className="flex space-x-3 pl-2 justify-center pr-4">
 
                     <button onClick={() => generatePDF(row)}
                       className="flex items-center gap-1 text-green-600 hover:text-green-500 dark:text-green-300 dark:hover:text-green-500">
@@ -144,7 +172,7 @@ const handleSaveEdit = (updatedRow: UserData) => {
                         <path d="M10 11v6m4-6v6" />
                       </svg>
                     </button>
- 
+
                   </div>
                 </TableCell>
               )}
@@ -159,31 +187,59 @@ const handleSaveEdit = (updatedRow: UserData) => {
                   <li className="marker:text-blue-500">{row.apoyo}</li>
                 </ul>
               </TableCell>
-              <TableCell>
+              <TableCell className="w-60">
                 <div className="flex flex-col gap-1">
                   <span>
-                    {format(new Date(row.fecha), "dd 'de' MMMM 'de' yyyy, hh:mm a", { locale: es })}                   
+                    {row.fecha
+                      ? format(new Date(row.fecha), "dd 'de' MMMM 'de' yyyy, HH:mm", { locale: es })
+                      : "Sin fecha"}
                   </span>
+
                   <span className="text-gray-500 dark:text-gray-400 text-sm">
                     {formatDistanceToNow(new Date(row.fecha), { addSuffix: true, locale: es })}
                   </span>
                 </div>
               </TableCell>
               <TableCell>
-                <span className={`px-3 py-2 rounded-full text-white ${statusColors[row.estatus]}`}>
-                  {row.estatus}
+                <span className={`px-3 py-2 rounded-full text-white ${statusColors[row.estatus] || "bg-gray-400"}`}>
+                  {row.estatus ?? "Sin estatus"}
                 </span>
               </TableCell>
+
               <TableCell className="max-w-[200px]">{row.nota}</TableCell>
               <TableCell className="text-left">
-                  <span className="whitespace-break-spaces">{row.updatedBy.departamento_id}</span>
-                  <br />
-                  <span className="text-xs text-gray-400 ">{row.updatedAt}</span>
+                <span className="whitespace-break-spaces">
+                  {row.updatedBy ? row.updatedBy.departamento_id : "Usuario eliminado"}
+                </span>
+                <br />
+                <span className="text-xs text-gray-400 ">{row.updatedAt}</span>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+      <div className="flex justify-center align-items-center p-6 pb-0">
+        <span className="text-gray-500 dark:text-gray-400 text-sm hidden lg:block w-full">
+          Mostrando {(currentPage - 1) * limit + 1}-{Math.min(currentPage * limit, totalSolicitudes)} de un total de {totalSolicitudes}
+        </span>
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className='dark:hover:bg-gray-700' />
+            </PaginationItem>
+            {[...Array(totalPages)].map((_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink onClick={() => handlePageChange(i + 1)} isActive={currentPage === i + 1}
+                  className='dark:hover:bg-gray-700'>{i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} className='dark:hover:bg-gray-700' />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
 
 
       {/* Modal de edición */}
@@ -193,7 +249,7 @@ const handleSaveEdit = (updatedRow: UserData) => {
           onSave={handleSaveEdit}
           onClose={handleCloseEditModal}
         />
-        
+
       )}
     </>
   );

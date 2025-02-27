@@ -16,14 +16,12 @@ import {
   LineChart,
   Line,
 } from "recharts"
-import { getStatusCounts, type UserData, type Status } from "@/utils/data"
-// import { getStatusCounts, type UserData2, type Status } from "@/utils/dataExample"
+import { type Status } from "@/utils/data"
 import { ChartSelector } from "@/components/ChartSelector"
 import { useTheme } from "next-themes";
 
-
 interface StatusChartProps {
-  data: UserData[]
+  statusCounts?: Record<Status, number>; 
 }
 
 const COLORS = {
@@ -33,17 +31,18 @@ const COLORS = {
   Concluido: "#3b82f6",
 }
 
-export const StatusChart = React.memo(function StatusChart({ data }: StatusChartProps) {
-  const [activeIndex, setActiveIndex] = useState(0)
-  const [chartType, setChartType] = useState("bar")
-  const statusCounts = getStatusCounts(data)
-  const chartData = Object.entries(statusCounts).map(([name, value]) => ({ name, value }))
-  const { theme } = useTheme()
+export const StatusChart = React.memo(function StatusChart({ statusCounts }: StatusChartProps) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [chartType, setChartType] = useState("bar");
+  const { theme } = useTheme();
 
-  const isDarkMode = theme === "dark"
+  // Usar statusCounts si está proporcionado, de lo contrario calcularlo
+  const counts = statusCounts || "";
+  const chartData = Object.entries(counts).map(([name, value]) => ({ name, value }));
 
-  const textColor = isDarkMode ? "#ffffff" : "#333333"
-  const gridColor = isDarkMode ? "#4a5568" : "#e2e8f0"
+  const isDarkMode = theme === "dark" || theme === "system";
+  const textColor = isDarkMode ? "#ffffff" : "#333333";
+  const gridColor = isDarkMode ? "#4a5568" : "#e2e8f0";
 
   const renderActiveShape = useCallback(
     (props: any) => {
@@ -156,8 +155,6 @@ export const StatusChart = React.memo(function StatusChart({ data }: StatusChart
             <Bar
               dataKey="value"
               fill="#8884d8"
-              // onMouseEnter={(data, index) => handleHover(data, index, true)}
-              // onMouseLeave={(data, index) => handleHover(data, index, false)}
             >
               {chartData.map((entry, index) => (
                 <Cell
@@ -170,7 +167,6 @@ export const StatusChart = React.memo(function StatusChart({ data }: StatusChart
               ))}
             </Bar>
           </BarChart>
-
         )
       case "line":
         return (

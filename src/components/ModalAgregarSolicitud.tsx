@@ -9,27 +9,32 @@ interface ModalAgregarSolicitudProps {
 }
 
 const ModalAgregarSolicitud: React.FC<ModalAgregarSolicitudProps> = ({ isModalOpen, closeModal, onAdd }) => {
-  const { data: session } = useSession(); // Obtener la sesión del usuario
+  const { data: session } = useSession();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    const fecha = formData.get("fecha") as string;
+    if (fecha) {
+      const date = new Date(fecha);
+      // Extraer componentes en la zona horaria local
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Meses van de 0-11
+      const day = date.getDate().toString().padStart(2, "0");
+      const hours = date.getHours().toString().padStart(2, "0");
+      const minutes = date.getMinutes().toString().padStart(2, "0");
+      // Crear una cadena en formato `YYYY-MM-DDTHH:mm`
+      const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}`;
+      formData.set("fecha", formattedDate);
+    }
 
-    // Llama a createSolicitud primero
     await createSolicitud(formData, session?.user.id);
-
-    // Luego cierra el modal y actualiza la lista en MainPage
     closeModal();
     onAdd();
   };
 
   if (!isModalOpen) return null;
-  // const router = useRouter();
 
-  // const handleSubmit = async (e: React.FormEvent) => {   
-  //   closeModal();
-  //   console.log("Redirect");
-  // };
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 overflow-y-auto">
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-11/12 lg:w-3/4 shadow-lg max-h-[90vh] overflow-y-auto">

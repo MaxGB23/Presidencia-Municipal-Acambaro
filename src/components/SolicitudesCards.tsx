@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, CardTitle } from './ui/card'; // Ajusta la ruta según tu estructura de archivos
-import { Users, ClipboardCheck, Hourglass, CircleX } from 'lucide-react'; // Ajusta la importación según la librería de íconos que uses
+import { Card, CardTitle } from '@/components/ui/card';
+import { Users, ClipboardCheck, Hourglass, CircleX } from 'lucide-react';
 
 interface SolicitudesCardsProps {
   totalSolicitudes: number;
@@ -21,7 +21,7 @@ const SolicitudesCards: React.FC<SolicitudesCardsProps> = ({
     <div className="grid grid-cols-2 gap-5 lg:col-span-2">
       {/* Card: Total de Solicitudes (Ocupa 2 columnas) */}
       <Card className="flex justify-center items-center dark:bg-gray-800 dark:text-white p-2 col-span-2 space-x-2">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 p-4 lg:p-0">
           <Users className="w-7 h-7 text-blue-700 dark:text-blue-400" />
           <CardTitle className="text-lg">Total de Solicitudes:</CardTitle>
         </div>

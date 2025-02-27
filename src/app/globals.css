@@ -37,8 +37,8 @@ body {
 
 	.btn-login:hover {
 		background: linear-gradient(to right,
-				var(--tertiary-color),
-				var(--primary-color));
+				#7ed6ff,
+				#00bdf1);
 	}
 
 	.blue {
@@ -129,11 +129,6 @@ body {
   }
 }
 
-.hola{
-color: #1f2937;
-color: #ffffff;
-color: #0072ff
-}
 .dark .input-autocomplete-dark:-webkit-autofill,
 .dark .input-autocomplete-dark:-webkit-autofill:hover,
 .dark .input-autocomplete-dark:-webkit-autofill:focus,
@@ -176,5 +171,16 @@ color: #0072ff
 }
 
 @layer base { img { display: initial; } }
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
 
 

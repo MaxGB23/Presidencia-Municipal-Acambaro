@@ -23,22 +23,44 @@ interface EditModalProps {
 }
 
 export const EditModal: React.FC<EditModalProps> = ({ editingRow, onClose, onSave }) => {
-  const [formData, setFormData] = useState<UserData>(editingRow);
+  const [formData, setFormData] = useState<UserData>({
+    ...editingRow,
+    fecha: editingRow.fecha
+      ? new Date(new Date(editingRow.fecha).getTime() - new Date(editingRow.fecha).getTimezoneOffset() * 60000)
+        .toISOString()
+        .slice(0, 16)
+      : "",
+  });
+
   const { data: session } = useSession();
+  // console.log("Valores", formData);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: value, // Mantiene el formato `YYYY-MM-DDTHH:mm` en el input
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formDataToSend = new FormData(e.currentTarget as HTMLFormElement);
-    await updateSolicitud(formDataToSend, session?.user.id, editingRow.id);
 
+    if (formData.fecha) {
+      const date = new Date(formData.fecha);
+      // Extraer componentes manualmente en la zona horaria local
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const day = date.getDate().toString().padStart(2, "0");
+      const hours = date.getHours().toString().padStart(2, "0");
+      const minutes = date.getMinutes().toString().padStart(2, "0");
+      // Construir la fecha en formato ISO sin cambiar la zona horaria
+      const fechaISO = `${year}-${month}-${day}T${hours}:${minutes}`;
+      formDataToSend.set("fecha", fechaISO);
+    }
+
+    await updateSolicitud(formDataToSend, session?.user.id, editingRow.id);
     onSave({ ...editingRow, ...Object.fromEntries(formDataToSend) }); // Actualiza estado en MainPage
     onClose();
   };
