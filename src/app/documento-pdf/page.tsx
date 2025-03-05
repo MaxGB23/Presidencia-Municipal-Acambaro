@@ -22,7 +22,7 @@ export default async function DocumentoPage({ searchParams }: Params) {
     atencion_ciudadana: "LIC. PATRICIA ORTIZ VÁZQUEZ",
     sexo_atencion_ciudadana: "MUJER",
     hay_jefe: true,
-    img: "/images/logo4k.jpg",
+    img: "/images/Logo4k.jpg",
     // img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFUAfyVe3Easiycyh3isP9wDQTYuSmGPsPQvLIJdEYvQ_DsFq5Ez2Nh_QjiS3oZ3B8ZPfK9cZQyIStmQMV1lDPLw"
   };
 
