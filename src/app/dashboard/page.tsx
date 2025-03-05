@@ -2,11 +2,11 @@ import MainPage from "@/components/MainPage";
 import { prisma } from '@/lib/prisma';
 
 interface Params {
-  searchParams?: {
+  searchParams?: Promise<{
     page: number;
     limit: number;
     search?: string;
-  };
+  }> | undefined;
 }
 
 export default async function Dashboard({ searchParams }: Params) {

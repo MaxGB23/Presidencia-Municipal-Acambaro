@@ -23,9 +23,11 @@ interface Data {
 
 interface Props {
   data: Data; 
+  currentPage: number;
+  limit: number;
 }
 
-export default function DocumentoPDF({ data }: Props) {
+export default function DocumentoPDF({ data, currentPage, limit }: Props) {
   const router = useRouter();
   const [vistaPrevia, setVistaPrevia] = useState(false);
 

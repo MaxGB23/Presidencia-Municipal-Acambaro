@@ -71,11 +71,24 @@ export default function UsuariosRegistrados({ users, totalUsers, currentPage, li
     }
   };
 
+      const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        const params = new URLSearchParams(searchParams.toString());
+        if (searchValue) {
+          params.set("search", searchValue);
+        } else {
+          params.delete("search");
+        }
+        params.set("page", "1");
+    
+        router.replace(`?${params.toString()}`);
+      };
+
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       <Sidebar isOpen={isOpen} />
       <div className="flex-1 overflow-auto">
-        <Navbar toggleSidebar={toggleSidebar} isOpen={isOpen} searchValue={searchValue} handleSearchChange={handleSearchChange} />
+        <Navbar toggleSidebar={toggleSidebar} isOpen={isOpen} searchValue={searchValue} handleSearchChange={handleSearchChange} handleSearchSubmit={handleSearchSubmit} />
         <div className="p-8 space-x-8">
           <Card className="bg-white dark:bg-gray-800">
             <div className="p-7 pb-5 flex justify-between align-items-center">

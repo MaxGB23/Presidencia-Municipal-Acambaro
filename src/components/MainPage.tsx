@@ -149,7 +149,7 @@ export default function MainPage({ solicitudes, totalSolicitudes, currentPage, l
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       <Sidebar isOpen={isOpen} />
-      {/* Contenedor principal */}
+      {/* Contenedor principal */} 
       <div className="flex-1 overflow-auto">
         {/* Navbar con posición sticky */}
         <Navbar toggleSidebar={toggleSidebar} isOpen={isOpen} searchValue={searchValue} handleSearchChange={handleSearchChange} handleSearchSubmit={handleSearchSubmit} />

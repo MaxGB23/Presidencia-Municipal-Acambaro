@@ -185,7 +185,8 @@ export const StatusChart = React.memo(function StatusChart({ statusCounts }: Sta
           </LineChart>
         )
       default:
-        return null
+        // Return a React Fragment or empty div to satisfy the return type
+        return <div />;
     }
   }, [chartType, chartData, activeIndex, onPieEnter, renderActiveShape, textColor, isDarkMode])
 

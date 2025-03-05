@@ -2,11 +2,11 @@ import UsuariosRegistrados from '@/components/UsuariosRegistrados';
 import { prisma } from '@/lib/prisma';
 
 interface Params {
-  searchParams?: {
+  searchParams?: Promise<{
     page: number;
     limit: number;
     search?: string;
-  };
+  }> | undefined;
 }
 
 export default async function UsuariosPage({ searchParams }: Params) {

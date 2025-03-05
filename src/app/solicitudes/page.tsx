@@ -9,17 +9,7 @@ export default function Estadisticas() {
 
   const [isOpen, setIsOpen] = useState(false);
   const toggleSidebar = () => setIsOpen(!isOpen);
-  const [searchValue, setSearchValue] = useState('');
   const router = useRouter();
-
-  const handleSearchChange = (value: string) => {
-    setSearchValue(value);
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('search', value);
-    params.set('page', '1'); // Reiniciar la paginación al buscar
-    router.replace(`?${params.toString()}`);
-  };
-  const searchParams = useSearchParams();
 
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
@@ -27,7 +17,7 @@ export default function Estadisticas() {
       {/* Contenedor principal */}
       <div className="flex-1 overflow-auto">
         {/* Navbar con posición sticky */}
-        <Navbar toggleSidebar={toggleSidebar} isOpen={isOpen} searchValue={searchValue} handleSearchChange={handleSearchChange} />
+        {/* <Navbar toggleSidebar={toggleSidebar} isOpen={isOpen} searchValue={searchValue} handleSearchChange={handleSearchChange} handleSearchSubmit={handleSearchSubmit} /> */}
         <div className='p-8'>
           <Card>
             <CardHeader>
