@@ -47,3 +47,15 @@ model Solicitudes {
   creador User? @relation("UserSolicitudesCreadas", fields: [createdBy], references: [id], onDelete: SetNull)
   actualizador User? @relation("UserSolicitudesActualizadas", fields: [updatedBy], references: [id], onDelete: SetNull)
 }
+
+model documentos_pdf {
+  id                         Int       @id @default(autoincrement())
+  presidente                 String
+  sexo_presidente            String
+  atencion_ciudadana         String
+  sexo_atencion_ciudadana    String
+  hay_jefe                   Boolean
+  img                        String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
