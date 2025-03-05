@@ -4,18 +4,17 @@ import { Users, ClipboardCheck, Hourglass, CircleX } from 'lucide-react';
 
 interface SolicitudesCardsProps {
   totalSolicitudes: number;
-  solicitudesRecibidas: number;
-  solicitudesPendientes: number;
-  solicitudesCanceladas: number;
-  solicitudesConcluidas: number;
+  estatusCount: {
+    Recibido: number;
+    Pendiente: number;
+    Cancelado: number;
+    Concluido: number;
+  };
 }
 
 const SolicitudesCards: React.FC<SolicitudesCardsProps> = ({
   totalSolicitudes,
-  solicitudesRecibidas,
-  solicitudesPendientes,
-  solicitudesCanceladas,
-  solicitudesConcluidas,
+  estatusCount,
 }) => {
   return (
     <div className="grid grid-cols-2 gap-5 lg:col-span-2">
@@ -37,9 +36,9 @@ const SolicitudesCards: React.FC<SolicitudesCardsProps> = ({
           <CardTitle className="text-lg font-semibold text-center">Solicitudes Recibidas</CardTitle>
         </div>
         <div className="text-center">
-          <p className="text-3xl font-bold mb-1">{solicitudesRecibidas}</p>
+          <p className="text-3xl font-bold mb-1">{estatusCount.Recibido}</p>
           <p className="text-sm text-gray-400">
-            ({((solicitudesRecibidas / totalSolicitudes) * 100).toFixed(2)}%)
+            ({((estatusCount.Recibido / totalSolicitudes) * 100).toFixed(2)}%)
           </p>
         </div>
       </Card>
@@ -51,9 +50,9 @@ const SolicitudesCards: React.FC<SolicitudesCardsProps> = ({
           <CardTitle className="text-lg font-semibold text-center">Solicitudes Pendientes</CardTitle>
         </div>
         <div className="text-center">
-          <p className="text-3xl font-bold mb-1">{solicitudesPendientes}</p>
+          <p className="text-3xl font-bold mb-1">{estatusCount.Pendiente}</p>
           <p className="text-sm text-gray-400">
-            ({((solicitudesPendientes / totalSolicitudes) * 100).toFixed(2)}%)
+            ({((estatusCount.Pendiente / totalSolicitudes) * 100).toFixed(2)}%)
           </p>
         </div>
       </Card>
@@ -65,9 +64,9 @@ const SolicitudesCards: React.FC<SolicitudesCardsProps> = ({
           <CardTitle className="text-lg font-semibold text-center">Solicitudes Canceladas</CardTitle>
         </div>
         <div className="text-center">
-          <p className="text-3xl font-bold mb-1">{solicitudesCanceladas}</p>
+          <p className="text-3xl font-bold mb-1">{estatusCount.Cancelado}</p>
           <p className="text-sm text-gray-400">
-            ({((solicitudesCanceladas / totalSolicitudes) * 100).toFixed(2)}%)
+            ({((estatusCount.Cancelado / totalSolicitudes) * 100).toFixed(2)}%)
           </p>
         </div>
       </Card>
@@ -79,9 +78,9 @@ const SolicitudesCards: React.FC<SolicitudesCardsProps> = ({
           <CardTitle className="text-lg font-semibold text-center">Solicitudes Concluidas</CardTitle>
         </div>
         <div className="text-center">
-          <p className="text-3xl font-bold mb-1">{solicitudesConcluidas}</p>
+          <p className="text-3xl font-bold mb-1">{estatusCount.Concluido}</p>
           <p className="text-sm text-gray-400">
-            ({((solicitudesConcluidas / totalSolicitudes) * 100).toFixed(2)}%)
+            ({((estatusCount.Concluido / totalSolicitudes) * 100).toFixed(2)}%)
           </p>
         </div>
       </Card>

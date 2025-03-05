@@ -32,6 +32,10 @@ const permisos = [
 function RegisterPage(){
   const { register, handleSubmit, setValue, watch, formState: { errors }, } = useForm({
     defaultValues: {
+      name: "",
+      lastname: "",
+      email: "",
+      password: "",
       permisos: "Visualizacion",
       departamento_id: "Otro",
     },
@@ -85,7 +89,7 @@ function RegisterPage(){
             {/* Parte izquierda */}
             <div className="w-full lg:w-1/2 p-10 flex flex-col justify-between gap-9">
               <Input type="text" id="name" label="Nombre" placeholder="Ingresa el Nombre"
-                error={errors.name?.message}
+                error={errors.name?.message as string | undefined}
                 required={true}
                 autoComplete="off"
                 {...register("name", {

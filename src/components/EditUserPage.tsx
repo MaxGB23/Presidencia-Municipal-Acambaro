@@ -38,6 +38,7 @@ export default function EditUserPage({ user }: { user: any }) {
       email: user.email,
       permisos: user.permisos,
       departamento_id: user.departamento_id,
+      password: "",
     },
   });
 

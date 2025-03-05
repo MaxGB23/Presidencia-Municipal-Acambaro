@@ -10,9 +10,10 @@ interface Params {
 }
 
 export default async function UsuariosPage({ searchParams }: Params) {
+
   const params = await searchParams;
   const page = Number(params?.page || 1);
-  const limit = Number(params?.limit || 10);
+  const limit = Number(params?.limit || 6);
   const skip = (page - 1) * limit;
   const search = params?.search || '';
 
@@ -45,6 +46,7 @@ export default async function UsuariosPage({ searchParams }: Params) {
     orderBy: { createdAt: 'asc' },
   });
 
-  return <UsuariosRegistrados users={users} totalUsers={totalUsers} currentPage={page} limit={limit} />
-
+  return (
+    <UsuariosRegistrados users={users} totalUsers={totalUsers} currentPage={page} limit={limit} />
+  )
 } 

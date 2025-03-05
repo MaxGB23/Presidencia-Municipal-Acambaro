@@ -2,8 +2,9 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
+import { NextAuthOptions } from "next-auth";
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -17,10 +18,13 @@ export const authOptions = {
           label: "Contraseña",
           type: "password",
           placeholder: "Contraseña",
-        },
-      },
+        }, 
+      }, 
       async authorize(credentials) {
-        console.log(credentials);
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Correo y contraseña son requeridos");
+        }
+
         const userFound = await prisma.user.findUnique({
           where: {
             email: credentials.email,
@@ -33,15 +37,16 @@ export const authOptions = {
           credentials.password,
           userFound.password
         );
+
         if (!matchPassword) throw new Error("Contraseña incorrecta");
 
         return {
           id: userFound.id.toString(),
-          name: userFound.name,
-          lastname: userFound.lastname,
-          email: userFound.email,
-          permisos: userFound.permisos,
-          departamento_id: userFound.departamento_id,
+          name: userFound.name || null,
+          lastname: userFound.lastname || null,
+          email: userFound.email || null,
+          permisos: userFound.permisos || null,
+          departamento_id: userFound.departamento_id || null,
         };
       },
     }),
@@ -51,31 +56,29 @@ export const authOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      // Si hay usuario (primer login), agregar más datos al token
       if (user) {
         token.id = user.id;
-        token.lastname = user.lastname;
-        token.permisos = user.permisos;
-        token.departamento_id = user.departamento_id;
+        token.lastname = user.lastname || null;
+        token.permisos = user.permisos || null;
+        token.departamento_id = user.departamento_id || null;
       }
       return token;
     },
     async session({ session, token }) {
-      // Agregar datos personalizados a la sesión del usuario
       if (session.user) {
-        session.user.id = token.id;
-        session.user.lastname = token.lastname;
-        session.user.permisos = token.permisos;
-        session.user.departamento_id = token.departamento_id;
+        session.user.id = token.id; 
+        session.user.lastname = token.lastname || null;
+        session.user.permisos = token.permisos || null;
+        session.user.departamento_id = token.departamento_id || null;
       }
       return session;
     },
   },
   session: {
-    strategy: "jwt",    
+    strategy: "jwt",
     maxAge: 60 * 30,
     updateAge: 15 * 60,
-  }
+  },
 };
 
 const handler = NextAuth(authOptions);

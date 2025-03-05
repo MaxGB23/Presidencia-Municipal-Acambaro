@@ -11,14 +11,15 @@ import { CirclePlus, UserRoundCheck } from "lucide-react";
 import Link from "next/link";
 import { deleteUser } from "@/actions/actions";
 import { toast } from "@/hooks/use-toast";
+import Footer from '@/components/Footer';
 
 interface Usuario {
-  id: string;
-  name: string;
-  lastname: string;
+  id: number;
+  name: string | null;
+  lastname: string | null;
   email: string;
-  departamento_id: string;
-  permisos: string;
+  departamento_id: string | null;
+  permisos: string | null;
 }
 
 interface Props {
@@ -55,8 +56,8 @@ export default function UsuariosRegistrados({ users, totalUsers, currentPage, li
     router.replace(`?${params.toString()}`);
   };
 
-  const handleDelete = async (rowId: string) => {
-    const id = parseInt(rowId, 10);
+  const handleDelete = async (id: number) => {
+    // const id = parseInt(rowId, 10);
     const userConfirmed = confirm(`¿Estás seguro de eliminar el usuario ${id}`);
 
     if (userConfirmed) {
@@ -144,7 +145,13 @@ export default function UsuariosRegistrados({ users, totalUsers, currentPage, li
               </Table>
               <div className="flex justify-center align-items-center p-6 pb-0">
                 <span className="text-gray-500 dark:text-gray-400 text-sm hidden lg:block w-full">
-                  Mostrando {(currentPage - 1) * limit + 1}-{Math.min(currentPage * limit, totalUsers)} de un total de {totalUsers}
+                  {
+                  totalUsers === 0 ? (
+                    'No hay resultados.'
+                  ) : (
+                    <span>Mostrando {(currentPage - 1) * limit + 1}-{Math.min(currentPage * limit, totalUsers)} de un total de {totalUsers}</span>
+                  )
+                  }
                 </span>
                 <Pagination>
                   <PaginationContent>
@@ -166,6 +173,7 @@ export default function UsuariosRegistrados({ users, totalUsers, currentPage, li
               </div>
             </CardContent>
           </Card>
+          <Footer />
         </div>
       </div>
     </div>

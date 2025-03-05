@@ -19,12 +19,12 @@ interface Solicitud {
   domicilio: string;
   telefono: string | null;
   solicitud: string | null;
-  apoyo: string | null;
+  apoyo_id: string | null;
   fecha: string | null;
-  estatus: Status;
+  estatus_id: string;
   nota: string | null;
-  updatedBy: string | null;
-  updatedAt: string;
+  updatedBy: { id: number; name: string | null; departamento_id: string | null } | null;
+  updatedAt: string | null;
 }
 
 interface DataTableProps {
@@ -32,15 +32,12 @@ interface DataTableProps {
   isEditing: boolean;
   onEdit: (updatedRow: Solicitud) => void;
   onDelete: (rowId: number) => void;
-  solicitudes: Solicitud[];
   totalSolicitudes: number;
   currentPage: number;
   limit: number;
-
 }
 
 export function DataTable({ data, isEditing, onEdit, onDelete, totalSolicitudes, currentPage, limit }: DataTableProps) {
-  console.log(data);
 
   const searchParams = useSearchParams();
   const pathName = usePathname();
@@ -53,7 +50,6 @@ export function DataTable({ data, isEditing, onEdit, onDelete, totalSolicitudes,
     newSearchParams.set('limit', limit.toString());
     router.replace(`${pathName}?${newSearchParams.toString()}`);
   };
-
 
   const [editingRow, setEditingRow] = useState<Solicitud | null>(null);
   const [isClient, setIsClient] = useState(false);
@@ -93,7 +89,10 @@ export function DataTable({ data, isEditing, onEdit, onDelete, totalSolicitudes,
         margin: 0,
         filename: `Apoyo-${row.curp}.pdf`,
         image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true, // Permite cargar imágenes externas
+        },
         jsPDF: { unit: "mm", format: "letter", orientation: "portrait" }
       };
 
@@ -180,11 +179,11 @@ export function DataTable({ data, isEditing, onEdit, onDelete, totalSolicitudes,
               <TableCell>{row.nombre}</TableCell>
               <TableCell>{row.domicilio}</TableCell>
               <TableCell>{row.telefono}</TableCell>
-              <TableCell>
+              <TableCell className="w-52">
                 {row.solicitud}
                 <br />
                 <ul className="list-disc ml-4">
-                  <li className="marker:text-blue-500">{row.apoyo}</li>
+                  <li className="marker:text-blue-500">{row.apoyo_id}</li>
                 </ul>
               </TableCell>
               <TableCell className="w-60">
@@ -196,13 +195,12 @@ export function DataTable({ data, isEditing, onEdit, onDelete, totalSolicitudes,
                   </span>
 
                   <span className="text-gray-500 dark:text-gray-400 text-sm">
-                    {formatDistanceToNow(new Date(row.fecha), { addSuffix: true, locale: es })}
-                  </span>
+                    {row.fecha ? formatDistanceToNow(new Date(row.fecha), { addSuffix: true, locale: es }) : 'Sin fecha'}                  </span>
                 </div>
               </TableCell>
               <TableCell>
-                <span className={`px-3 py-2 rounded-full text-white ${statusColors[row.estatus] || "bg-gray-400"}`}>
-                  {row.estatus ?? "Sin estatus"}
+                <span className={`px-3 py-2 rounded-full text-white ${statusColors[row.estatus_id as Status] || "bg-gray-400"}`}>
+                  {row.estatus_id ?? "Sin estatus"}
                 </span>
               </TableCell>
 
@@ -220,7 +218,13 @@ export function DataTable({ data, isEditing, onEdit, onDelete, totalSolicitudes,
       </Table>
       <div className="flex justify-center align-items-center p-6 pb-0">
         <span className="text-gray-500 dark:text-gray-400 text-sm hidden lg:block w-full">
-          Mostrando {(currentPage - 1) * limit + 1}-{Math.min(currentPage * limit, totalSolicitudes)} de un total de {totalSolicitudes}
+          {
+            totalSolicitudes === 0 ? (
+              'No hay resultados.'
+            ) : (
+                <span>Mostrando {(currentPage - 1) * limit + 1}-{Math.min(currentPage * limit, totalSolicitudes)} de un total de {totalSolicitudes}</span>
+            )
+          }        
         </span>
         <Pagination>
           <PaginationContent>
@@ -249,7 +253,6 @@ export function DataTable({ data, isEditing, onEdit, onDelete, totalSolicitudes,
           onSave={handleSaveEdit}
           onClose={handleCloseEditModal}
         />
-
       )}
     </>
   );

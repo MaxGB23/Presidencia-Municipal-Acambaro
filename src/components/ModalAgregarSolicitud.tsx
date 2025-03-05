@@ -28,6 +28,11 @@ const ModalAgregarSolicitud: React.FC<ModalAgregarSolicitudProps> = ({ isModalOp
       formData.set("fecha", formattedDate);
     }
 
+    if (!session?.user.id) {
+      console.error("No se pudo obtener el ID del usuario.");
+      return;
+    }
+
     await createSolicitud(formData, session?.user.id);
     closeModal();
     onAdd();
@@ -117,7 +122,7 @@ const ModalAgregarSolicitud: React.FC<ModalAgregarSolicitudProps> = ({ isModalOp
                 Tipo de Apoyo <Asterisk className="text-red-500 size-[11px] mt-1" />
               </label>
               <select
-                name="apoyo"
+                name="apoyo_id"
                 className="w-full p-5 border border-gray-300 dark:border-gray-700 rounded-xl dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
                 required
               >
@@ -126,6 +131,7 @@ const ModalAgregarSolicitud: React.FC<ModalAgregarSolicitudProps> = ({ isModalOp
                 <option value="Concentradores">Concentradores</option>
                 <option value="Medicamento">Medicamento</option>
                 <option value="Vales de Gasolina">Vales de Gasolina</option>
+                <option value="Otro">Otro</option>
               </select>
             </div>
 
@@ -148,7 +154,7 @@ const ModalAgregarSolicitud: React.FC<ModalAgregarSolicitudProps> = ({ isModalOp
                 Estatus <Asterisk className="text-red-500 size-[11px] mt-1" />
               </label>
               <select
-                name="estatus"
+                name="estatus_id"
                 className="w-full p-5 border border-gray-300 dark:border-gray-700 rounded-xl dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
                 required
               >

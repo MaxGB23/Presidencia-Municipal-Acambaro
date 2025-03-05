@@ -3,27 +3,31 @@ import { Asterisk } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import React, { useState } from 'react';
 
-interface UserData {
-  id: string;
-  nombre: string;
+// export type Status = "Recibido" | "Pendiente" | "Cancelado" | "Concluido";
+
+interface Solicitud {
+  id: number;
   curp: string;
+  nombre: string;
   domicilio: string;
-  telefono: string;
-  solicitud: string;
-  apoyo: string;
-  fecha: string;
-  estatus: string;
-  nota: string;
+  telefono: string | null;
+  solicitud: string | null;
+  apoyo_id: string | null;
+  fecha: string | null;
+  estatus_id: string;
+  nota: string | null;
+  updatedBy: { id: number; name: string | null; departamento_id: string | null } | null;
+  updatedAt: string | null;
 }
 
 interface EditModalProps {
-  editingRow: UserData;
+  editingRow: Solicitud;
   onClose: () => void;
-  onSave: (updatedRow: UserData) => void;
+  onSave: (updatedRow: Solicitud) => void;
 }
 
 export const EditModal: React.FC<EditModalProps> = ({ editingRow, onClose, onSave }) => {
-  const [formData, setFormData] = useState<UserData>({
+  const [formData, setFormData] = useState<Solicitud>({
     ...editingRow,
     fecha: editingRow.fecha
       ? new Date(new Date(editingRow.fecha).getTime() - new Date(editingRow.fecha).getTimezoneOffset() * 60000)
@@ -59,8 +63,12 @@ export const EditModal: React.FC<EditModalProps> = ({ editingRow, onClose, onSav
       const fechaISO = `${year}-${month}-${day}T${hours}:${minutes}`;
       formDataToSend.set("fecha", fechaISO);
     }
+    if (!session?.user.id) {
+      console.error("No se pudo obtener el ID del usuario.");
+      return;
+    }
 
-    await updateSolicitud(formDataToSend, session?.user.id, editingRow.id);
+    await updateSolicitud(formDataToSend, session.user.id, editingRow.id.toString());
     onSave({ ...editingRow, ...Object.fromEntries(formDataToSend) }); // Actualiza estado en MainPage
     onClose();
   };
@@ -128,8 +136,8 @@ export const EditModal: React.FC<EditModalProps> = ({ editingRow, onClose, onSav
                 type="text"
                 name="telefono"
                 className="w-full p-4 border border-gray-300 dark:border-gray-700 rounded-xl dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
-                placeholder="Teléfono"
-                value={formData.telefono}
+                placeholder="Teléfono" 
+                value={formData.telefono || ""}
                 onChange={handleChange}
                 required
               />
@@ -145,7 +153,7 @@ export const EditModal: React.FC<EditModalProps> = ({ editingRow, onClose, onSav
                 name="solicitud"
                 className="w-full p-4 border border-gray-300 dark:border-gray-700 rounded-xl dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
                 placeholder="Detalles de la solicitud"
-                value={formData.solicitud}
+                value={formData.solicitud || ""}
                 onChange={handleChange}
                 required
               ></textarea>
@@ -157,9 +165,9 @@ export const EditModal: React.FC<EditModalProps> = ({ editingRow, onClose, onSav
                 Tipo de Apoyo <Asterisk className="text-red-500 size-[11px] mt-1" />
               </label>
               <select
-                name="apoyo"
+                name="apoyo_id"
                 className="w-full p-5 border border-gray-300 dark:border-gray-700 rounded-xl dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
-                value={formData.apoyo}
+                value={formData.apoyo_id || ""}
                 onChange={handleChange}
                 required
               >
@@ -168,6 +176,7 @@ export const EditModal: React.FC<EditModalProps> = ({ editingRow, onClose, onSav
                 <option value="Concentradores">Concentradores</option>
                 <option value="Medicamento">Medicamento</option>
                 <option value="Vales de Gasolina">Vales de Gasolina</option>
+                <option value="Otro">Otro</option>
               </select>
             </div>
 
@@ -180,7 +189,7 @@ export const EditModal: React.FC<EditModalProps> = ({ editingRow, onClose, onSav
                 type="datetime-local"
                 name="fecha"
                 className="w-full p-4 border border-gray-300 dark:border-gray-700 rounded-xl dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
-                value={formData.fecha}
+                value={formData.fecha || ""}
                 onChange={handleChange}
                 required
               />
@@ -192,9 +201,9 @@ export const EditModal: React.FC<EditModalProps> = ({ editingRow, onClose, onSav
                 Estatus <Asterisk className="text-red-500 size-[11px] mt-1" />
               </label>
               <select
-                name="estatus"
+                name="estatus_id"
                 className="w-full p-5 border border-gray-300 dark:border-gray-700 rounded-xl dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
-                value={formData.estatus}
+                value={formData.estatus_id || ""}
                 onChange={handleChange}
                 required
               >
@@ -212,7 +221,7 @@ export const EditModal: React.FC<EditModalProps> = ({ editingRow, onClose, onSav
                 name="nota"
                 className="w-full p-4 border border-gray-300 dark:border-gray-700 rounded-xl dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-400 outline-none"
                 placeholder="Notas adicionales"
-                value={formData.nota}
+                value={formData.nota || ""}
                 onChange={handleChange}
               ></textarea>
             </div>

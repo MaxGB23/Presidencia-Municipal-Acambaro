@@ -8,9 +8,10 @@ interface NavbarProps {
   isOpen: boolean;
   searchValue: string;
   handleSearchChange: (value: string) => void;
+  handleSearchSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
-const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, isOpen, searchValue, handleSearchChange }) => {
+const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, isOpen, searchValue, handleSearchChange, handleSearchSubmit }) => {
   
   return (
     <nav className="shadow-md dark:shadow-slate-950 space-x-4 items-center flex sticky top-0 z-50 p-5 bg-gray-50 dark:bg-gray-900">
@@ -21,7 +22,7 @@ const Navbar: React.FC<NavbarProps> = React.memo(({ toggleSidebar, isOpen, searc
       >
         <Menu className={`w-6 h-6 ${isOpen ? "rotate-180" : ""}`} />
       </button>
-      <SearchBar modelValue={searchValue} onChange={handleSearchChange} />
+      <SearchBar modelValue={searchValue} onChange={handleSearchChange} handleSearchSubmit={handleSearchSubmit}  />
       <ModeToggle />
     </nav>
   );

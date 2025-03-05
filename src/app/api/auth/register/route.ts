@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     const { password: _, ...user } = newUser;
 
     return NextResponse.json({ user: newUser });
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
       {
         message: error.message,

@@ -12,8 +12,7 @@ import ModalAgregarSolicitud from "@/components/ModalAgregarSolicitud";
 import { deleteSolicitud } from "@/actions/actions";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter, useSearchParams } from "next/navigation";
-
-type Status = "Recibido" | "Pendiente" | "Cancelado" | "Concluido";
+import Footer from "@/components/Footer";
 
 interface Solicitud {
   id: number;
@@ -23,12 +22,12 @@ interface Solicitud {
   telefono: string | null;
   solicitud: string | null;
   apoyo_id: string | null;
-  fecha: string | null;
-  estatus_id: Status;
+  fecha: Date | null;
+  estatus_id: string;
   nota: string | null;
-  updatedBy: string | null;
-  updatedAt: Date | null;
-  actualizador: { id: string; name: string; departamento_id: string } | null;
+  updatedBy: number | null;
+  updatedAt: Date;
+  actualizador: { id: number; name: string | null; departamento_id: string | null } | null;
 }
 
 interface Props {
@@ -36,14 +35,15 @@ interface Props {
   totalSolicitudes: number;
   currentPage: number;
   limit: number;
-  solicitudesRecibidas: number;
-  solicitudesPendientes: number;
-  solicitudesCanceladas: number;
-  solicitudesConcluidas: number;
+  estatusCount: {
+    Recibido: number;
+    Pendiente: number;
+    Cancelado: number;
+    Concluido: number;
+  };
 }
 
-export default function MainPage({ solicitudes, totalSolicitudes, currentPage, limit, solicitudesRecibidas, 
-  solicitudesPendientes, solicitudesCanceladas, solicitudesConcluidas }: Props) {
+export default function MainPage({ solicitudes, totalSolicitudes, currentPage, limit, estatusCount }: Props) {
 
   function formatDate(isoDate: Date | null, includeTime: boolean = true) {
     if (!isoDate) return null;
@@ -69,8 +69,8 @@ export default function MainPage({ solicitudes, totalSolicitudes, currentPage, l
       domicilio: solicitud.domicilio,
       telefono: solicitud.telefono,
       solicitud: solicitud.solicitud,
-      apoyo: solicitud.apoyo_id,
-      estatus: solicitud.estatus_id,
+      apoyo_id: solicitud.apoyo_id,
+      estatus_id: solicitud.estatus_id,
       fecha: formatDate(fecha, true),
       nota: solicitud.nota,
       updatedBy: solicitud.actualizador
@@ -84,21 +84,33 @@ export default function MainPage({ solicitudes, totalSolicitudes, currentPage, l
     };
   });
 
-  const totalAbsoluto = solicitudesRecibidas + solicitudesPendientes + solicitudesCanceladas + solicitudesConcluidas;
-
-  const chartData = {
-    Recibido: solicitudesRecibidas,
-    Pendiente: solicitudesPendientes,
-    Cancelado: solicitudesCanceladas,
-    Concluido: solicitudesConcluidas,
-  };
-
+  const totalAbsoluto = Object.values(estatusCount).reduce((acc, value) => acc + value, 0);
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [searchValue, setSearchValue] = useState('');  
+  const toggleSidebar = () => setIsOpen(!isOpen);
+  const closeModal = () => setIsModalOpen(false);
   const { toast } = useToast()
   const router = useRouter();
+  const [searchValue, setSearchValue] = useState('');
+  const searchParams = useSearchParams();
+
+  const handleSearchChange = (value: string) => {
+    setSearchValue(value);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const params = new URLSearchParams(searchParams.toString());
+    if (searchValue) {
+      params.set("search", searchValue);
+    } else {
+      params.delete("search");
+    }
+    params.set("page", "1");
+
+    router.replace(`?${params.toString()}`);
+  };
 
   const handleAdd = async () => {
     router.refresh()
@@ -131,22 +143,8 @@ export default function MainPage({ solicitudes, totalSolicitudes, currentPage, l
     }
   };
 
-  const toggleSidebar = () => setIsOpen(!isOpen);
-  const closeModal = () => setIsModalOpen(false);
-
-  const handleSearchChange = (value: string) => {
-    setSearchValue(value);
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('search', value);
-    params.set('page', '1'); // Reiniciar la paginación al buscar
-    router.replace(`?${params.toString()}`);
-  };
-  const searchParams = useSearchParams();
-
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const tienePermisos = session?.user?.permisos !== "Visualizacion";
-  // imprimir sesion del usuario
-  // console.log("Usuario autenticado:", session);
 
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
@@ -154,7 +152,7 @@ export default function MainPage({ solicitudes, totalSolicitudes, currentPage, l
       {/* Contenedor principal */}
       <div className="flex-1 overflow-auto">
         {/* Navbar con posición sticky */}
-        <Navbar toggleSidebar={toggleSidebar} isOpen={isOpen} searchValue={searchValue} handleSearchChange={handleSearchChange} />
+        <Navbar toggleSidebar={toggleSidebar} isOpen={isOpen} searchValue={searchValue} handleSearchChange={handleSearchChange} handleSearchSubmit={handleSearchSubmit} />
         {/* Contenido principal */}
         <div className="p-8 pt-0">
           <h1 className="text-3xl font-bold dark:text-white pl-3 py-6">Panel de Administración</h1>
@@ -163,7 +161,7 @@ export default function MainPage({ solicitudes, totalSolicitudes, currentPage, l
             {/* Gráfico de estado */}
             <div className="lg:col-span-4">
               {session ? (
-                <StatusChart statusCounts={chartData} />
+                <StatusChart statusCounts={estatusCount} />
               ) : (
                 <Card className="w-full h-[615px] flex items-center justify-center dark:bg-gray-800">
                   <p className="text-2xl">Cargando...</p>
@@ -172,13 +170,7 @@ export default function MainPage({ solicitudes, totalSolicitudes, currentPage, l
             </div>
 
             {/* Estadísticas */}
-            <SolicitudesCards
-              totalSolicitudes={totalAbsoluto}
-              solicitudesRecibidas={solicitudesRecibidas}
-              solicitudesPendientes={solicitudesPendientes}
-              solicitudesCanceladas={solicitudesCanceladas}
-              solicitudesConcluidas={solicitudesConcluidas}
-            />
+            <SolicitudesCards totalSolicitudes={totalAbsoluto} estatusCount={estatusCount} />
           </div>
 
           {/* Tabla de solicitudes */}
@@ -201,7 +193,7 @@ export default function MainPage({ solicitudes, totalSolicitudes, currentPage, l
                         }`}
                       onClick={() => setIsEditing(!isEditing)}
                     >
-                      {!isEditing ? <Pencil className="" /> : <CircleX className="" />}
+                      {!isEditing ? <Pencil /> : <CircleX />}
                     </button>
                   </div>
                 </>
@@ -230,9 +222,10 @@ export default function MainPage({ solicitudes, totalSolicitudes, currentPage, l
               )}
             </CardContent>
           </Card>
+          <Footer />
         </div>
       </div>
-      <ModalAgregarSolicitud isModalOpen={isModalOpen} closeModal={closeModal} onAdd={handleAdd} />    
+      <ModalAgregarSolicitud isModalOpen={isModalOpen} closeModal={closeModal} onAdd={handleAdd} />
     </div>
   );
 }

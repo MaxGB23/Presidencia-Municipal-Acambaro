@@ -12,7 +12,7 @@ function LoginPage() {
   const { register, handleSubmit, formState: { errors }, } = useForm();
 
   const router = useRouter();
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const onSubmit = handleSubmit(async (data: any) => {
     console.log(data);
@@ -22,14 +22,14 @@ function LoginPage() {
       redirect: false      
     });
     console.log(res);
-
-    if (res.error) {
-      setError(res.error);
-    }else {
-      router.push('/dashboard');
-      router.refresh();
-      // console.log("Inicio de sesión exitoso");
+    
+    if (!res || res.error) {
+      setError(res?.error ?? "Ocurrió un error inesperado");
+      return;
     }
+
+    router.push('/dashboard');
+    router.refresh();
   });
 
   return (
@@ -46,7 +46,7 @@ function LoginPage() {
               {error && <AlertDestructive description={error} /> }
               <Input type="email" id="email" label="Correo Electrónico"
                 placeholder="Ingresa tu correo"
-                error={errors.email?.message}
+                error={errors.email?.message as string | undefined}
                 required={true}
                 {...register("email", {
                   required: {
@@ -57,7 +57,7 @@ function LoginPage() {
               />
               <Input type="password" id="password" label="Contraseña"
                 placeholder="Ingresa tu contraseña"
-                error={errors.password?.message}
+                error={errors.password?.message as string | undefined}
                 required={true}
                 {...register("password", {
                   required: {
@@ -66,7 +66,7 @@ function LoginPage() {
                   }
                 })}
               />
-              <Button className="mt-4" text="Iniciar Sesión" type="submit" />
+              <Button className="mt-4" text="Iniciar Sesión" />
             </div>
             {/* Parte derecha del formulario */}
             <LoginSide />

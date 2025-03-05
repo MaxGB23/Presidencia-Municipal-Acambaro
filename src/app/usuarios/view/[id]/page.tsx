@@ -7,6 +7,7 @@ interface EditUserProps {
 }
 
 const EditUser = async ({ params }: EditUserProps) => {
+
   const resolvedParams = await params;
   const userId = parseInt(resolvedParams.id, 10);
 
@@ -18,8 +19,8 @@ const EditUser = async ({ params }: EditUserProps) => {
     where: { id: userId },
   });
 
-  if (!user) {    
-    redirect("/usuarios/view");    
+  if (!user) {
+    redirect("/usuarios/view");
   }
 
   return <EditUserPage user={user} />;

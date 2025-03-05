@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Home, User, PieChart, LogOut, HeartHandshake } from "lucide-react";
+import { Home, User, PieChart, LogOut, HeartHandshake, FileOutput } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
@@ -13,6 +13,8 @@ const Sidebar: React.FC<SidebarProps> = React.memo( ({ isOpen }) => {
   const [isHovered, setIsHovered] = useState(false);
   const { data: session } = useSession();
   const isAdmin = session?.user?.permisos === "Admin";
+  const isEditor = session?.user?.permisos === "Edicion";
+
   const router = useRouter();  
 
   const handleLogout = async () => {
@@ -32,6 +34,8 @@ const Sidebar: React.FC<SidebarProps> = React.memo( ({ isOpen }) => {
     { name: "Inicio", icon: <Home />, link: "/dashboard" },
     { name: "Apoyos", icon: <HeartHandshake />, link: "/solicitudes" },
     { name: "Estadísticas", icon: <PieChart />, link: "/estadisticas" },
+    // { name: "Documento PDF", icon: <FileOutput />, link: "/documento-pdf" },
+    ...(isEditor || isAdmin ? [{ name: "Documento PDF", icon: <FileOutput />, link: "/documento-pdf" }] : []),
     ...(isAdmin ? [{ name: "Usuarios", icon: <User />, link: "/usuarios/view" }] : []),
   ];  
 
