@@ -22,8 +22,7 @@ export async function createSolicitud(formData: FormData, userId: string) {
   console.log("Nueva solicitud creada:", formData, "Creado por User ID:", userIdInt);  
 }
 
-export async function updateSolicitud(
-  formData: FormData,
+export async function updateSolicitud(formData: FormData,
   userId: string,
   id: string
 ) {
@@ -53,10 +52,7 @@ export async function deleteSolicitud(id: number) {
 }
 
 // User Actions
-export async function updateUser(
-  formData: FormData,
-  id: string
-) {
+export async function updateUser(formData: FormData, id: string) {
   const idInt = parseInt(id, 10);
   await prisma.user.update({
     where: { id: idInt },
@@ -76,4 +72,21 @@ export async function updateUser(
 export async function deleteUser(id: number) {
   await prisma.user.delete({ where: { id } });
   console.log("Usuario no.", id, "eliminado con éxito");
+}
+
+export async function updateDocument(formData: FormData, id: string) {
+  const idInt = parseInt(id, 10);
+  const hayJefe = formData.get("hay_jefe") === "true";
+
+  await prisma.documentos_pdf.update({
+    where: { id: idInt },
+    data: {
+      presidente: formData.get("presidente") as string,
+      sexo_presidente: formData.get("sexo_presidente") as string,
+      atencion_ciudadana: formData.get("atencion_ciudadana") as string,
+      sexo_atencion_ciudadana: formData.get("sexo_atencion_ciudadana") as string,
+      hay_jefe: hayJefe,
+      img: formData.get("img") as string,
+    },
+  });
 }

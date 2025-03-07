@@ -41,20 +41,29 @@ export default function UsuariosRegistrados({ users, totalUsers, currentPage, li
     newSearchParams.set('limit', limit.toString());
     router.replace(`${pathName}?${newSearchParams.toString()}`);
   };
-
+ 
   const [isOpen, setIsOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
-  const handleSearchChange = (value: string) => {
-    setSearchValue(value);
-    // Actualizar la URL con el valor de búsqueda
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('search', value);
-    params.set('page', '1'); // Reiniciar la paginación al buscar
-    router.replace(`?${params.toString()}`);
-  };
+  
+    const handleSearchChange = (value: string) => {
+      setSearchValue(value);
+    };
+  
+    const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()    
+      const params = new URLSearchParams(searchParams.toString());
+      if (searchValue) {
+        params.set("search", searchValue);
+      } else {
+        params.delete("search");
+      }
+      params.set("page", "1");
+  
+      router.replace(`?${params.toString()}`);
+    };
 
   const handleDelete = async (id: number) => {
     // const id = parseInt(rowId, 10);
@@ -70,19 +79,6 @@ export default function UsuariosRegistrados({ users, totalUsers, currentPage, li
       });
     }
   };
-
-      const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        const params = new URLSearchParams(searchParams.toString());
-        if (searchValue) {
-          params.set("search", searchValue);
-        } else {
-          params.delete("search");
-        }
-        params.set("page", "1");
-    
-        router.replace(`?${params.toString()}`);
-      };
 
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
@@ -122,8 +118,8 @@ export default function UsuariosRegistrados({ users, totalUsers, currentPage, li
                   )}
                   {users.map((row) => (
                     <TableRow key={row.id} className="dark:bg-slate-800 dark:text-white">
-                      <TableCell className="px-10 w-12">{row.name}</TableCell>
-                      <TableCell className="px-10 w-12">{row.lastname}</TableCell>
+                      <TableCell className="px-8 w-12">{row.name}</TableCell>
+                      <TableCell className="px-8 w-12">{row.lastname}</TableCell>
                       <TableCell className="pl-8 pr-0 lg:max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap">
                         {row.email}
                       </TableCell>

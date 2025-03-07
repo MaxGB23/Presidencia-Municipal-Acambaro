@@ -55,7 +55,7 @@ model documentos_pdf {
   atencion_ciudadana         String
   sexo_atencion_ciudadana    String
   hay_jefe                   Boolean
-  img                        String
+  img                        String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }

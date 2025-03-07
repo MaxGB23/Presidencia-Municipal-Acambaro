@@ -10,7 +10,6 @@ interface Params {
 }
 
 export default async function UsuariosPage({ searchParams }: Params) {
-
   const params = await searchParams;
   const page = Number(params?.page || 1);
   const limit = Number(params?.limit || 6);
@@ -20,9 +19,10 @@ export default async function UsuariosPage({ searchParams }: Params) {
   const totalUsers = await prisma.user.count({
     where: {
       OR: [
-        { name: { contains: search, mode: 'insensitive' } }, 
-        { email: { contains: search, mode: 'insensitive' } },
-        { name: { contains: search, mode: 'insensitive' } },
+        {
+          name: { contains: search.split(' ')[0], mode: 'insensitive' },
+          lastname: { contains: search.split(' ')[1], mode: 'insensitive' },
+        },
         { lastname: { contains: search, mode: 'insensitive' } },
         { email: { contains: search, mode: 'insensitive' } },
         { departamento_id: { contains: search, mode: 'insensitive' } },
@@ -32,11 +32,13 @@ export default async function UsuariosPage({ searchParams }: Params) {
   });
 
   const users = await prisma.user.findMany({
-    skip,
-    take: limit,
+    skip, take: limit,
     where: {
       OR: [
-        { name: { contains: search, mode: 'insensitive' } },
+        {
+          name: { contains: search.split(' ')[0], mode: 'insensitive' },
+          lastname: { contains: search.split(' ')[1], mode: 'insensitive' },
+        },
         { lastname: { contains: search, mode: 'insensitive' } },
         { email: { contains: search, mode: 'insensitive' } },
         { departamento_id: { contains: search, mode: 'insensitive' } },
@@ -47,6 +49,7 @@ export default async function UsuariosPage({ searchParams }: Params) {
   });
 
   return (
-    <UsuariosRegistrados users={users} totalUsers={totalUsers} currentPage={page} limit={limit} />
+    <UsuariosRegistrados users={users} totalUsers={totalUsers} 
+      currentPage={page} limit={limit} />
   )
 } 

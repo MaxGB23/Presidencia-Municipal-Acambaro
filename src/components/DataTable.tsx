@@ -9,6 +9,7 @@ import { es } from "date-fns/locale";
 import { useState, useEffect } from "react";
 import PDF from "@/components/PDF";
 import { EditModal } from "./EditModal";
+import { toast } from "@/hooks/use-toast";
 
 export type Status = "Recibido" | "Pendiente" | "Cancelado" | "Concluido";
 
@@ -96,11 +97,19 @@ export function DataTable({ data, isEditing, onEdit, onDelete, totalSolicitudes,
         jsPDF: { unit: "mm", format: "letter", orientation: "portrait" }
       };
 
+      // timeout 2s
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       await html2pdf().from(element).set(options).save();
       console.log("PDF generado con éxito.");
     } catch (error) {
       console.error("Error al generar el PDF:", error);
       alert("Hubo un problema al generar el PDF. Inténtalo de nuevo.");
+      toast({
+        title: "Error al generar el PDF",
+        description: "Hubo un problema al generar el PDF. Inténtalo de nuevo.",
+        variant: "destructive",
+      })
     }
   }
 
@@ -175,7 +184,7 @@ export function DataTable({ data, isEditing, onEdit, onDelete, totalSolicitudes,
                   </div>
                 </TableCell>
               )}
-              <TableCell>{row.curp}</TableCell>
+              <TableCell className="pl-4">{row.curp}</TableCell>
               <TableCell>{row.nombre}</TableCell>
               <TableCell>{row.domicilio}</TableCell>
               <TableCell>{row.telefono}</TableCell>

@@ -31,12 +31,8 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>   
       <title>Apoyos</title>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <ThemeProvider attribute="class" defaultTheme="system"
+          enableSystem disableTransitionOnChange>
           {children}
           <Toaster />
         </ThemeProvider>

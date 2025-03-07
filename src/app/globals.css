@@ -5,7 +5,6 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
-
 	/* Variables de colores para degradados */
 	:root {
 		--primary-color: #00c6ff;
@@ -44,7 +43,6 @@ body {
 	.blue {
 		color: #007bff;
 	}
-
 
 @layer base {
   :root {
@@ -118,8 +116,6 @@ body {
   }
 }
 
-
-
 @layer base {
   * {
     @apply border-border;
@@ -171,7 +167,6 @@ body {
 }
 
 @layer base { img { display: initial; } }
-
 
 
 @layer base {

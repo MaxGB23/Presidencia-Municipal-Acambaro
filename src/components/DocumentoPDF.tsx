@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { FilePen } from "lucide-react";
 import Link from "next/link";
@@ -12,14 +12,15 @@ import Footer from '@/components/Footer';
 import PDF from "@/components/PDF";
 
 interface Data {
+  img: string;
   id: number;
-  presidente: string | null;
-  sexo_presidente: string | null;
-  atencion_ciudadana: string | null;
-  sexo_atencion_ciudadana: string | null; 
-  hay_jefe: boolean | null;
-  img: string | undefined;
-}
+  presidente: string;
+  sexo_presidente: string ;
+  atencion_ciudadana: string;
+  sexo_atencion_ciudadana: string; 
+  hay_jefe: boolean;
+
+} 
 
 interface Props {
   data: Data; 
@@ -53,6 +54,35 @@ export default function DocumentoPDF({ data, currentPage, limit }: Props) {
   
       router.replace(`?${params.toString()}`);
     };
+
+  const [imageExists, setImageExists] = useState(false);
+  const [imageLoading, setImageLoading] = useState(true);
+
+  // Función para verificar si la imagen existe
+  // const checkImageExists = async (url: string) => {
+  //   try {
+  //     const response = await fetch(url, { method: "HEAD" });
+  //     return response.ok;
+  //   } catch (error) {
+  //     console.error("Error al verificar la imagen:", error);
+  //     return false;
+  //   }
+  // };
+
+  // Usamos useEffect para verificar la imagen cuando se recibe la URL
+  // useEffect(() => {
+  //   if (data.img) {
+  //     const validateImage = async () => {
+  //       const exists = await checkImageExists(data.img);
+  //       setImageExists(exists);
+  //       setImageLoading(false); // Termina de cargar después de verificar
+  //     };
+  //     validateImage();
+  //   } else {
+  //     setImageExists(false);
+  //     setImageLoading(false); // Si no hay imagen, ya terminó de cargar
+  //   }
+  // }, [data.img]);
   
 
   const dataExample = {
@@ -105,15 +135,48 @@ export default function DocumentoPDF({ data, currentPage, limit }: Props) {
                     </TableCell>
                     {/* <TableCell >{data.sexo_atencion_ciudadana}</TableCell> */}
                     <TableCell className='text-center'>{data.hay_jefe ? "SI" : "NO"}</TableCell>
-                    <TableCell className='text-center'>
-                      <img src={data.img} alt="Imagen" className="size-28 rounded-2xl" />
+                    <TableCell className="text-center">
+                      {data.img ? (
+                        <img src={data.img} alt="No encontrado" className="size-28 rounded-lg" />
+                      ) : (
+                          <div className="size-28 rounded-lg"></div>
+                      )}
+                      {/* {imageLoading ? (
+                        <div>Loading...</div>
+                      ) : imageExists && data.img ? (
+                        <img src={data.img} alt="Imagen" className="size-28 rounded-lg" />
+                      ) : (
+                        <img src="/images/Image-not-found.png" alt="Imagen" className="size-28 rounded-lg" />
+                      )} */}
+
+                      {/* {data.img ? (
+                        <img
+                          src={data.img}
+                          alt="No encontrado"
+                          className="size-32 mt-20 ml-14 text-xs rounded-md"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null; // Evita bucles infinitos
+                            e.currentTarget.src = ""; // Borra la imagen rota
+                            e.currentTarget.style.display = "none"; // Oculta la imagen
+                            document.getElementById("fallback-message")!.style.display = "flex"; // Muestra el mensaje de forma segura
+                          }}
+                        />
+                      ) : null}
+
+                      <div
+                        id="fallback-message"
+                        className="size-32 mt-20 ml-14 rounded-md bg-gray-200 flex items-center justify-center text-xs text-gray-500"
+                        style={{ display: data.img ? "none" : "flex" }}
+                      >
+                        No encontrado
+                      </div> */}
                     </TableCell>
                     <TableCell>
                       <div className="flex align-items-center justify-center">
-                        <Link href={`/usuarios/view/${data.id}`}
+                        <Link href={`/documento-pdf/${data.id}`}
                           className="flex items-center gap-1 text-blue-500 hover:text-blue-300 dark:text-blue-300 dark:hover:text-blue-200 text-lg"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="size-7 pb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <svg className="size-7 pb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M21 11.5V19a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h7.5" />
                             <path d="M17 2.5a2.121 2.121 0 013 3l-9 9L7 15l.5-3.5 9-9z" />
                           </svg>
