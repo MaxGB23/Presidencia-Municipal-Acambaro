@@ -4,12 +4,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { FilePen } from "lucide-react";
 import Link from "next/link";
 import Footer from '@/components/Footer';
 import PDF from "@/components/PDF";
+import Image from 'next/image';
 
 interface Data {
   img: string;
@@ -19,7 +20,6 @@ interface Data {
   atencion_ciudadana: string;
   sexo_atencion_ciudadana: string; 
   hay_jefe: boolean;
-
 } 
 
 interface Props {
@@ -54,36 +54,6 @@ export default function DocumentoPDF({ data, currentPage, limit }: Props) {
   
       router.replace(`?${params.toString()}`);
     };
-
-  const [imageExists, setImageExists] = useState(false);
-  const [imageLoading, setImageLoading] = useState(true);
-
-  // Función para verificar si la imagen existe
-  // const checkImageExists = async (url: string) => {
-  //   try {
-  //     const response = await fetch(url, { method: "HEAD" });
-  //     return response.ok;
-  //   } catch (error) {
-  //     console.error("Error al verificar la imagen:", error);
-  //     return false;
-  //   }
-  // };
-
-  // Usamos useEffect para verificar la imagen cuando se recibe la URL
-  // useEffect(() => {
-  //   if (data.img) {
-  //     const validateImage = async () => {
-  //       const exists = await checkImageExists(data.img);
-  //       setImageExists(exists);
-  //       setImageLoading(false); // Termina de cargar después de verificar
-  //     };
-  //     validateImage();
-  //   } else {
-  //     setImageExists(false);
-  //     setImageLoading(false); // Si no hay imagen, ya terminó de cargar
-  //   }
-  // }, [data.img]);
-  
 
   const dataExample = {
     id: 1,
@@ -133,43 +103,20 @@ export default function DocumentoPDF({ data, currentPage, limit }: Props) {
                         <span>SEXO: {data.sexo_atencion_ciudadana}</span>                 
                       </div>                      
                     </TableCell>
-                    {/* <TableCell >{data.sexo_atencion_ciudadana}</TableCell> */}
                     <TableCell className='text-center'>{data.hay_jefe ? "SI" : "NO"}</TableCell>
                     <TableCell className="text-center">
                       {data.img ? (
-                        <img src={data.img} alt="No encontrado" className="size-28 rounded-lg" />
+                        // <img src={data.img} alt="No encontrado" className="size-28 rounded-lg" />
+                      <Image
+                        src={data.img}
+                        alt="No encontrado"
+                        width={112} // Ancho en píxeles
+                        height={112} // Alto en píxeles
+                        className="size-28 rounded-lg"
+                      />
                       ) : (
                           <div className="size-28 rounded-lg"></div>
                       )}
-                      {/* {imageLoading ? (
-                        <div>Loading...</div>
-                      ) : imageExists && data.img ? (
-                        <img src={data.img} alt="Imagen" className="size-28 rounded-lg" />
-                      ) : (
-                        <img src="/images/Image-not-found.png" alt="Imagen" className="size-28 rounded-lg" />
-                      )} */}
-
-                      {/* {data.img ? (
-                        <img
-                          src={data.img}
-                          alt="No encontrado"
-                          className="size-32 mt-20 ml-14 text-xs rounded-md"
-                          onError={(e) => {
-                            e.currentTarget.onerror = null; // Evita bucles infinitos
-                            e.currentTarget.src = ""; // Borra la imagen rota
-                            e.currentTarget.style.display = "none"; // Oculta la imagen
-                            document.getElementById("fallback-message")!.style.display = "flex"; // Muestra el mensaje de forma segura
-                          }}
-                        />
-                      ) : null}
-
-                      <div
-                        id="fallback-message"
-                        className="size-32 mt-20 ml-14 rounded-md bg-gray-200 flex items-center justify-center text-xs text-gray-500"
-                        style={{ display: data.img ? "none" : "flex" }}
-                      >
-                        No encontrado
-                      </div> */}
                     </TableCell>
                     <TableCell>
                       <div className="flex align-items-center justify-center">

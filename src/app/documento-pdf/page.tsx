@@ -1,6 +1,4 @@
 import DocumentoPDF from '@/components/DocumentoPDF';
-import { obtenerDocumentoPDF } from "@/app/api/documentos-pdf/route";
-
 
 interface Params {
   searchParams?: Promise<{
@@ -15,56 +13,21 @@ export default async function DocumentoPage({ searchParams }: Params) {
   const page = Number(params?.page || 1);
   const limit = Number(params?.limit || 5);
   const skip = (page - 1) * limit;
-  const search = params?.search || ''; 
-//   const documento_pdf = {
-//     id: 1,
-//     presidente: "LIC. CLAUDIA SILVA CAMPOS",
-//     sexo_presidente: "MUJER",
-//     atencion_ciudadana: "LIC. PATRICIA ORTIZ VÁZQUEZ",
-//     sexo_atencion_ciudadana: "MUJER",
-//     hay_jefe: false,
-//     img: "/images/Logo4k.jpg",
-// };
-// const documento_pdf = await prisma.documentos_pdf.findMany({
-//   take: 1,
-//   select: {
-//     id: true,
-//     presidente: true,
-//     sexo_presidente: true,
-//     atencion_ciudadana: true,
-//     sexo_atencion_ciudadana: true,
-//     hay_jefe: true,
-//     img: true
-//   }
-// });
+  const search = params?.search || '';
 
-// const data = documento_pdf.length > 0 ? {
-//   ...documento_pdf[0],
-//   img: documento_pdf[0].img || "/images/Image-not-found.png"
-// } : {
-//   id: 0,
-//   presidente: "",
-//   sexo_presidente: "",
-//   atencion_ciudadana: "",
-//   sexo_atencion_ciudadana: "",
-//   hay_jefe: false,
-//   img: "/images/Image-not-found.png"
-// };
+  // Check if we're on the server or client side
+  const apiUrl = typeof window === 'undefined'
+    ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/documentos-pdf`
+    : '/api/documentos-pdf'; // Relative URL for client side
 
-  const data = await obtenerDocumentoPDF();
+  const response = await fetch(apiUrl);
+  const data = await response.json();
 
-  
   return (
     <DocumentoPDF data={data} currentPage={page} limit={limit} />
-  )
+  );
+}
 
-  // const data = {
-  //   ...documento_pdf,
-  //   img: documento_pdf.img || "/images/Image-not-found.png", 
-  // };
-
-
-} 
 
 
 

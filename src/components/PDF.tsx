@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import Image from 'next/image';
 
 type Props = {
   nombre: string;
@@ -18,25 +19,14 @@ interface Data {
   img: string;
 }
 
-// const documentos_pdf = {
-//   presidente: "LIC. CLAUDIA SILVA CAMPOS",
-//   sexo_presidente: "MUJER",
-//   atencion_ciudadana: "LIC. PATRICIA ORTIZ VÁZQUEZ",
-//   sexo_atencion_ciudadana: "MUJER",
-//   hay_jefe: false,
-//   img: "/images/logo4k.jpg",
-// };
-
-const PDF: React.FC<Props> = ({ nombre, domicilio, solicitud, telefono, id }) => {
-  
-  const fallbackRef2 = useRef<HTMLDivElement>(null);
+const PDF: React.FC<Props> = ({ nombre, domicilio, solicitud, telefono, id }) => {  
 
   const [data, setData] = useState<Data | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/documentos-pdf"); // Llamada a la API
+        const response = await fetch("/api/documentos-pdf"); 
         const result = await response.json();
         setData(result);
       } catch (error) {
@@ -49,42 +39,24 @@ const PDF: React.FC<Props> = ({ nombre, domicilio, solicitud, telefono, id }) =>
 
   if (!data) return <div className="text-center">Cargando...</div>;
 
-
   return (
     <div
       className="w-[8.5in] h-[11in] pt-0 p-24 border border-black mx-auto dark:bg-white dark:text-black"
       id={id}>
       {/* Encabezado */}
       <div className="flex justify-between items-start">
-        {/* <Image src="/images/logo4k.jpg" className="mt-20 ml-[58px] rounded-t-full " alt="Logo" width={120} height={120} />         */}
-        {/* <img src="/images/logo4k.jpg" alt="Logo" className="size-32 mt-20 ml-14 rounded-t-full " /> */}
         { data.img ? (
-          <img src={data.img} alt=" " className="size-32 mt-20 ml-14 rounded-t-3xl " />
+          // <img src={data.img} alt=" " className="size-32 mt-20 ml-14 rounded-t-3xl " />
+          <Image
+            src={data.img}
+            alt=" "
+            width={128} 
+            height={128} 
+            className="size-32 mt-20 ml-14 rounded-t-3xl"
+          />
         ) : (
           <div className="size-32 mt-20 ml-14 rounded-t-full "></div>
-        )}
-        {/* {documentos_pdf.img ? (np
-          <img
-            src={documentos_pdf.img}
-            alt="No encontrado"
-            className="size-32 mt-20 ml-14 text-xs rounded-md"
-            onError={(e) => {
-              e.currentTarget.onerror = null; // Evita bucles infinitos
-              e.currentTarget.src = ""; // Borra la imagen rota
-              e.currentTarget.style.display = "none"; // Oculta la imagen
-              if (fallbackRef2.current) {
-                fallbackRef2.current.style.display = "flex"; // Muestra el mensaje solo en este componente
-              }
-            }}
-          />
-        ) : null}
-        <div
-          ref={fallbackRef2}
-          className="size-32 mt-20 ml-14 rounded-md text-xs"
-          style={{ display: documentos_pdf.img ? "none" : "flex" }}
-        >          
-        </div> */}
-
+        )}        
 
         <div className="text-right pt-28 space-y-8">
           <p><span className="font-bold">Acámbaro, Gto.</span>, a {new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}.</p>
