@@ -97,9 +97,6 @@ export function DataTable({ data, isEditing, onEdit, onDelete, totalSolicitudes,
         jsPDF: { unit: "mm", format: "letter", orientation: "portrait" }
       };
 
-      // timeout 2s
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
       await html2pdf().from(element).set(options).save();
       console.log("PDF generado con éxito.");
     } catch (error) {
