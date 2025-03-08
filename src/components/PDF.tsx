@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Image from 'next/image';
 
 type Props = {
   nombre: string;
@@ -46,14 +45,7 @@ const PDF: React.FC<Props> = ({ nombre, domicilio, solicitud, telefono, id }) =>
       {/* Encabezado */}
       <div className="flex justify-between items-start">
         { data.img ? (
-          // <img src={data.img} alt=" " className="size-32 mt-20 ml-14 rounded-t-3xl " />
-          <Image
-            src={data.img}
-            alt=" "
-            width={128} 
-            height={128} 
-            className="size-32 mt-20 ml-14 rounded-t-3xl"
-          />
+          <img src={data.img} alt=" " className="size-32 mt-20 ml-14 rounded-t-3xl " />
         ) : (
           <div className="size-32 mt-20 ml-14 rounded-t-full "></div>
         )}        

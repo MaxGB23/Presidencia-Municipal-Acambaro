@@ -10,7 +10,6 @@ import { FilePen } from "lucide-react";
 import Link from "next/link";
 import Footer from '@/components/Footer';
 import PDF from "@/components/PDF";
-import Image from 'next/image';
 
 interface Data {
   img: string;
@@ -106,14 +105,7 @@ export default function DocumentoPDF({ data, currentPage, limit }: Props) {
                     <TableCell className='text-center'>{data.hay_jefe ? "SI" : "NO"}</TableCell>
                     <TableCell className="text-center">
                       {data.img ? (
-                        // <img src={data.img} alt="No encontrado" className="size-28 rounded-lg" />
-                      <Image
-                        src={data.img}
-                        alt="No encontrado"
-                        width={112} // Ancho en píxeles
-                        height={112} // Alto en píxeles
-                        className="size-28 rounded-lg"
-                      />
+                        <img src={data.img} alt="No encontrado" className="size-28 rounded-lg" />
                       ) : (
                           <div className="size-28 rounded-lg"></div>
                       )}

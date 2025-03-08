@@ -27,13 +27,3 @@ export default async function DocumentoPage({ searchParams }: Params) {
     <DocumentoPDF data={data} currentPage={page} limit={limit} />
   );
 }
-
-
-
-
-
-// img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFUAfyVe3Easiycyh3isP9wDQTYuSmGPsPQvLIJdEYvQ_DsFq5Ez2Nh_QjiS3oZ3B8ZPfK9cZQyIStmQMV1lDPLw"
-
-// "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVEzqfXSO4HCa7FamTkgqKhra4O7kV-e7atA&s"
-
-// "https://i.pinimg.com/736x/57/11/ad/5711ade01c5d414dba321e554a3c6e04.jpg"
