@@ -20,9 +20,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
         <input
           id={id}
-          ref={ref} // Pasamos la referencia aquí
+          ref={ref}
           className="bg-white w-full p-4 text-base lg:text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring input-autocomplete-dark dark:text-black"
-          {...props} // Pasamos todas las props restantes (type, placeholder, etc.)
+          {...props}
         /> <br />
         {error && <span className="text-red-600 pl-1 pt-1 absolute">{error}</span>}
       </div>
@@ -30,6 +30,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-Input.displayName = "Input"; // Esto es necesario para evitar errores con forwardRef
+Input.displayName = "Input";
 
 export default Input;

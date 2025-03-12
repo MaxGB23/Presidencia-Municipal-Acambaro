@@ -2,48 +2,41 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { statusColors } from "@/utils/data";
 import { FileOutput } from 'lucide-react';
 import { formatDistanceToNow, format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useState, useEffect } from "react";
 import PDF from "@/components/PDF";
-import { EditModal } from "./EditModal";
+import { EditModal } from "@/components/EditModal";
+import { SolicitudFormateada, Status, statusColors } from '@/types/types';
+import EditIcon from "@/components/svg/EditIcon";
+import TrashIcon from "@/components/svg/TrashIcon";
+import { deleteSolicitud } from "@/actions/actions";
 import { toast } from "@/hooks/use-toast";
 
-export type Status = "Recibido" | "Pendiente" | "Cancelado" | "Concluido";
-
-interface Solicitud {
-  id: number;
-  curp: string;
-  nombre: string;
-  domicilio: string;
-  telefono: string | null;
-  solicitud: string | null;
-  apoyo_id: string | null;
-  fecha: string | null;
-  estatus_id: string;
-  nota: string | null;
-  updatedBy: { id: number; name: string | null; departamento_id: string | null } | null;
-  updatedAt: string | null;
-}
-
 interface DataTableProps {
-  data: Solicitud[];
+  data: SolicitudFormateada[];
   isEditing: boolean;
-  onEdit: (updatedRow: Solicitud) => void;
-  onDelete: (rowId: number) => void;
   totalSolicitudes: number;
   currentPage: number;
   limit: number;
 }
 
-export function DataTable({ data, isEditing, onEdit, onDelete, totalSolicitudes, currentPage, limit }: DataTableProps) {
+export function DataTable({ data, isEditing, totalSolicitudes, currentPage, limit }: DataTableProps) {
 
   const searchParams = useSearchParams();
   const pathName = usePathname();
   const router = useRouter();
   const totalPages = Math.ceil(totalSolicitudes / limit);
+
+  const [editingRow, setEditingRow] = useState<SolicitudFormateada | null>(null);
+  const [isClient, setIsClient] = useState(false);
+  const [showPDF, setShowPDF] = useState(false);
+  const [selectedRow, setSelectedRow] = useState<SolicitudFormateada | null>(null);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handlePageChange = (page: number) => {
     const newSearchParams = new URLSearchParams(searchParams);
@@ -52,38 +45,54 @@ export function DataTable({ data, isEditing, onEdit, onDelete, totalSolicitudes,
     router.replace(`${pathName}?${newSearchParams.toString()}`);
   };
 
-  const [editingRow, setEditingRow] = useState<Solicitud | null>(null);
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  const handleEditClick = (row: Solicitud) => {
+  const handleEditClick = (row: SolicitudFormateada) => {
     setEditingRow(row);
-  };
-
-  const handleSaveEdit = (updatedRow: Solicitud) => {
-    onEdit(updatedRow);  // Actualiza la lista en MainPage
-    setEditingRow(null);
   };
 
   const handleCloseEditModal = () => {
     setEditingRow(null);
   };
 
-  async function generatePDF(row: Solicitud) {
+  const handleDelete = async (rowId: number) => {
+    const userConfirmed = confirm("¿Estás seguro de eliminar esta solicitud?");
+    if (userConfirmed) {
+      try {
+        const result = await deleteSolicitud(rowId);
+        if (!result.success) throw new Error(result.message);
+        router.refresh();
+        toast({
+          title: "Solicitud Eliminada",
+          description: result.message,
+          variant: "destructive",
+        });
+      } catch (error) {
+        router.refresh();
+        toast({
+          title: "Error al eliminar solicitud",
+          description: error instanceof Error
+            ? error.message.includes("Cannot read properties of undefined (reading 'success')")
+              ? "Sesión expirada"
+              : error.message
+            : "Ocurrió un error inesperado.",
+          variant: "destructive",
+        });
+      }
+    };
+  };
+
+  async function generatePDF(row: SolicitudFormateada) {
+    setSelectedRow(row);
+    await new Promise((resolve) => setTimeout(resolve, 1200));
     try {
-      if (typeof window === "undefined") return; // Evita ejecución en SSR
+      if (typeof window === "undefined") return;
 
       const element = document.querySelector(`#pdf-${row.id}`);
       if (!element) {
         console.error("Elemento no encontrado");
-        alert("No se encontró el contenido a exportar.");
+        alert("Error de Conexión. Inténtalo de nuevo.");
         return;
       }
 
-      // Importar html2pdf dinámicamente en el cliente
       const html2pdf = (await import("html2pdf.js")).default;
 
       const options = {
@@ -92,7 +101,7 @@ export function DataTable({ data, isEditing, onEdit, onDelete, totalSolicitudes,
         image: { type: "jpeg", quality: 0.98 },
         html2canvas: {
           scale: 2,
-          useCORS: true, // Permite cargar imágenes externas
+          useCORS: true,
         },
         jsPDF: { unit: "mm", format: "letter", orientation: "portrait" }
       };
@@ -102,12 +111,10 @@ export function DataTable({ data, isEditing, onEdit, onDelete, totalSolicitudes,
     } catch (error) {
       console.error("Error al generar el PDF:", error);
       alert("Hubo un problema al generar el PDF. Inténtalo de nuevo.");
-      toast({
-        title: "Error al generar el PDF",
-        description: "Hubo un problema al generar el PDF. Inténtalo de nuevo.",
-        variant: "destructive",
-      })
-    }
+    } 
+    // finally {
+    //   setSelectedRow(null);
+    // }
   }
 
   return (
@@ -134,48 +141,26 @@ export function DataTable({ data, isEditing, onEdit, onDelete, totalSolicitudes,
             </TableRow>
           )}
           {data.map((row) => (
-
-
-
             <TableRow key={row.id} className="dark:bg-slate-800 dark:text-white">
               {isEditing && (
                 <TableCell>
                   <div className="flex space-x-3 pl-2 justify-center pr-4">
-
-                    <button onClick={() => generatePDF(row)}
+                    <button onClick={() => generatePDF(row)} aria-label="PDF"
                       className="flex items-center gap-1 text-green-600 hover:text-green-500 dark:text-green-300 dark:hover:text-green-500">
                       <FileOutput className="size-5"></FileOutput>
-                      <div className="hidden">
-                        <PDF
-                          nombre={row.nombre}
-                          domicilio={row.domicilio}
-                          solicitud={row.solicitud}
-                          telefono={row.telefono}
-                          id={`pdf-${row.id}`}
-                        />
-                      </div>
-
                     </button>
-
                     <button
-                      onClick={() => handleEditClick(row)}
+                      onClick={() => handleEditClick(row)} aria-label="Editar"
                       className="flex items-center gap-1 text-blue-500 hover:text-blue-300 dark:text-blue-300 dark:hover:text-blue-200"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M21 11.5V19a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h7.5" />
-                        <path d="M17 2.5a2.121 2.121 0 013 3l-9 9L7 15l.5-3.5 9-9z" />
-                      </svg>
+                      <EditIcon />
                     </button>
 
                     <button
-                      onClick={() => onDelete(row.id)}
+                      onClick={() => handleDelete(row.id)} aria-label="Eliminar"
                       className="flex items-center gap-1 text-red-600 hover:text-red-300 dark:text-red-400 dark:hover:text-red-200"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                        <path d="M9 3h6a1 1 0 011 1v2H8V4a1 1 0 011-1z" />
-                        <path d="M4 7h16m-1 0v11a2 2 0 01-2 2H7a2 2 0 01-2-2V7h14z" />
-                        <path d="M10 11v6m4-6v6" />
-                      </svg>
+                      <TrashIcon />
                     </button>
 
                   </div>
@@ -195,13 +180,24 @@ export function DataTable({ data, isEditing, onEdit, onDelete, totalSolicitudes,
               <TableCell className="w-60">
                 <div className="flex flex-col gap-1">
                   <span>
-                    {row.fecha
-                      ? format(new Date(row.fecha), "dd 'de' MMMM 'de' yyyy, HH:mm", { locale: es })
-                      : "Sin fecha"}
+                    {row.fecha && !isNaN(new Date(row.fecha).getTime())
+                      ? (() => {
+                        try {
+                          const formattedDate = format(new Date(row.fecha), "dd 'de' MMMM 'de' yyyy, HH:mm", { locale: es });
+                          return formattedDate;
+                        } catch (error) {
+                          console.error("Error al formatear la fecha:", error);
+                          return "Error al formatear la fecha";
+                        }
+                      })()
+                      : "Fecha inválida"}
                   </span>
 
                   <span className="text-gray-500 dark:text-gray-400 text-sm">
-                    {row.fecha ? formatDistanceToNow(new Date(row.fecha), { addSuffix: true, locale: es }) : 'Sin fecha'}                  </span>
+                    {row.fecha && !isNaN(new Date(row.fecha).getTime())
+                      ? formatDistanceToNow(new Date(row.fecha), { addSuffix: true, locale: es })
+                      : 'Sin fecha'}
+                  </span>
                 </div>
               </TableCell>
               <TableCell>
@@ -228,9 +224,9 @@ export function DataTable({ data, isEditing, onEdit, onDelete, totalSolicitudes,
             totalSolicitudes === 0 ? (
               'No hay resultados.'
             ) : (
-                <span>Mostrando {(currentPage - 1) * limit + 1}-{Math.min(currentPage * limit, totalSolicitudes)} de un total de {totalSolicitudes}</span>
+              <span>Mostrando {(currentPage - 1) * limit + 1}-{Math.min(currentPage * limit, totalSolicitudes)} de un total de {totalSolicitudes}</span>
             )
-          }        
+          }
         </span>
         <Pagination>
           <PaginationContent>
@@ -245,18 +241,26 @@ export function DataTable({ data, isEditing, onEdit, onDelete, totalSolicitudes,
               </PaginationItem>
             ))}
             <PaginationItem>
-              <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} className='dark:hover:bg-gray-700' />
+              <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages || totalPages === 0} className='dark:hover:bg-gray-700' />
             </PaginationItem>
           </PaginationContent>
         </Pagination>
       </div>
-
-
+      {selectedRow && (
+        <div className="hidden">
+          <PDF
+            nombre={selectedRow.nombre}
+            domicilio={selectedRow.domicilio}
+            solicitud={selectedRow.solicitud}
+            telefono={selectedRow.telefono}
+            id={`pdf-${selectedRow.id}`}
+          />
+        </div>
+      )}
       {/* Modal de edición */}
       {editingRow && (
         <EditModal
           editingRow={editingRow}
-          onSave={handleSaveEdit}
           onClose={handleCloseEditModal}
         />
       )}

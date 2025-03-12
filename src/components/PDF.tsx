@@ -58,31 +58,36 @@ const PDF: React.FC<Props> = ({ nombre, domicilio, solicitud, telefono, id }) =>
 
       {/* Destinatario */}
       <div className="mt-6 font-bold font-serif text-[17px]">
-        <p>{data.presidente} <br /> {data.sexo_presidente === "MUJER" ? "PRESIDENTA" : "PRESIDENTE"} MUNICIPAL <br /> P R E S E N T E.</p>
+        <p>{data.presidente} <br />
+          {data.sexo_presidente === "MUJER" ? "PRESIDENTA" : "PRESIDENTE"} MUNICIPAL <br/> 
+          P R E S E N T E.
+        </p>
       </div>
       {data.hay_jefe && (
         <div className="mt-5 text-right text-[17px]">
-          <p className="font-bold">AT’N. {data.atencion_ciudadana} <br /> {data.sexo_atencion_ciudadana === "MUJER" ? "JEFA" : "JEFE"} DE ATENCIÓN CIUDADANA</p>
+          <p className="font-bold">AT’N. {data.atencion_ciudadana} <br /> 
+          {data.sexo_atencion_ciudadana === "MUJER" ? "JEFA" : "JEFE"} DE ATENCIÓN CIUDADANA</p>
         </div>
       )}
 
       {/* Cuerpo */}
       <div className="mt-20 mb-16 text-justify">
-        <p>
-          ㅤㅤQuien suscribe, C. <span className=" font-bold">{nombre}</span>, residente de <span className="font-bold">{domicilio}</span>,
+        <p className="indent-8">
+          Quien suscribe, C. <span className=" font-bold">{nombre}</span>, residente de <span className="font-bold">{domicilio}</span>,
           perteneciente al Municipio de Acámbaro, Guanajuato, comparezco ante usted con el
           fin de exponer lo siguiente:
         </p>
         <br />
-        <p>
-          ㅤㅤPor medio de la presente, le envío un cordial saludo y, al mismo tiempo, le
-          solicito de la manera más atenta su valioso <span className=" font-bold">{solicitud}</span>
-          , debido a que soy una persona de escasos recursos, acudo a su buena voluntad con la
+        <p className="indent-8">
+          Por medio de la presente, le envío un cordial saludo y, al mismo tiempo, le
+          solicito de la manera más atenta su valioso <span className="font-bold">{solicitud}</span>,
+          debido a que soy una persona de escasos recursos, acudo a su buena voluntad con la
           esperanza de ser apoyado.
         </p>
+
         <br />
-        <p>
-          ㅤㅤSin otro particular de momento, le agradezco de antemano la atención que sirva
+        <p className="indent-8">
+          Sin otro particular de momento, le agradezco de antemano la atención que sirva
           brindar a la presente.
         </p>
       </div>

@@ -10,6 +10,7 @@ import { FilePen } from "lucide-react";
 import Link from "next/link";
 import Footer from '@/components/Footer';
 import PDF from "@/components/PDF";
+import { motion } from 'motion/react';
 
 interface Data {
   img: string;
@@ -68,6 +69,12 @@ export default function DocumentoPDF({ data, currentPage, limit }: Props) {
       <div className="flex-1 overflow-auto">
         <Navbar toggleSidebar={toggleSidebar} isOpen={isOpen} searchValue={searchValue} 
           handleSearchChange={handleSearchChange} handleSearchSubmit={handleSearchSubmit} />
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.1 }}
+        >
         <div className="p-8">
           <Card className="bg-white dark:bg-gray-800">
             <div className="p-7 pb-5 flex justify-between align-items-center">
@@ -145,6 +152,7 @@ export default function DocumentoPDF({ data, currentPage, limit }: Props) {
           
           <Footer />
         </div>
+        </motion.div>
       </div>
     </div>
   );

@@ -16,7 +16,8 @@ import {
   LineChart,
   Line,
 } from "recharts"
-import { type Status } from "@/utils/data"
+// import { type Status } from "@/utils/data"
+import { Status } from '@/types/types';
 import { ChartSelector } from "@/components/ChartSelector"
 import { useTheme } from "next-themes";
 

@@ -21,6 +21,10 @@ export default async function Dashboard({ searchParams }: Params) {
       OR: [
         { nombre: { contains: search, mode: 'insensitive' } },
         { curp: { contains: search, mode: 'insensitive' } },
+        { domicilio: { contains: search, mode: 'insensitive' } },
+        { telefono: { contains: search, mode: 'insensitive' } },
+        { apoyo_id: { contains: search, mode: 'insensitive' } },
+        { actualizador: { departamento_id: { contains: search, mode: 'insensitive' } } },
       ],
     },
   });
@@ -31,6 +35,10 @@ export default async function Dashboard({ searchParams }: Params) {
       OR: [
         { nombre: { contains: search, mode: 'insensitive' } },
         { curp: { contains: search, mode: 'insensitive' } },
+        { domicilio: { contains: search, mode: 'insensitive' } },
+        { telefono: { contains: search, mode: 'insensitive' } },
+        { apoyo_id: { contains: search, mode: 'insensitive' } },
+        { actualizador: { departamento_id: { contains: search, mode: 'insensitive' } } },
       ],
     },
     select: {
@@ -63,12 +71,3 @@ export default async function Dashboard({ searchParams }: Params) {
       totalSolicitudes={totalSolicitudes} estatusCount={estatusCount} />
   );
 }
-
-
-// { domicilio: { contains: search, mode: 'insensitive' } },
-// { telefono: { contains: search, mode: 'insensitive' } },
-// { apoyo_id: { contains: search, mode: 'insensitive' } },
-// { solicitud: { contains: search, mode: 'insensitive' } },
-// { estatus_id: { contains: search, mode: 'insensitive' } },
-// { nota: { contains: search, mode: 'insensitive' } },
-// { actualizador: { departamento_id: { contains: search, mode: 'insensitive' } } },

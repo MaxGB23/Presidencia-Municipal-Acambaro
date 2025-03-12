@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { set } from "date-fns";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -18,7 +19,7 @@ const Sidebar: React.FC<SidebarProps> = React.memo( ({ isOpen }) => {
   const router = useRouter();  
 
   const handleLogout = async () => {
-    await signOut({ redirect: false }); // Evita la pantalla de confirmación
+    await signOut({ redirect: false });
     router.push("/auth/login");
   };  
 
@@ -34,7 +35,6 @@ const Sidebar: React.FC<SidebarProps> = React.memo( ({ isOpen }) => {
     { name: "Inicio", icon: <Home />, link: "/dashboard" },
     // { name: "Apoyos", icon: <HeartHandshake />, link: "/solicitudes" },
     // { name: "Estadísticas", icon: <PieChart />, link: "/estadisticas" },
-    // { name: "Documento PDF", icon: <FileOutput />, link: "/documento-pdf" },
     ...(isEditor || isAdmin ? [{ name: "Documento PDF", icon: <FileOutput />, link: "/documento-pdf" }] : []),
     ...(isAdmin ? [{ name: "Usuarios", icon: <User />, link: "/usuarios/view" }] : []),
   ];  
@@ -42,15 +42,15 @@ const Sidebar: React.FC<SidebarProps> = React.memo( ({ isOpen }) => {
   const sidebarOpen = isOpen || isHovered;
 
   return (
+  <>
     <div
-      className={`shadow-md flex h-screen transition-all duration-200 overflow-hidden ${sidebarOpen ? "w-60" : "w-20"}`}
-      aria-hidden={!sidebarOpen}
+      className={`fixed sm:static shadow-md flex h-screen transition-all duration-200 overflow-hidden z-50 ${sidebarOpen ? "w-60" : "w-0 sm:w-20 "}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-    > 
+    >
       <div className="relative flex flex-col w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
         {/* Header */}
-        <div className="flex items-center shadow-md p-4 pl-5">
+        <div className="flex items-center sm:shadow-md p-4 pl-5">
           <div className={`flex items-center ${sidebarOpen ? "space-x-4" : ""}`}>
             <Image src="/images/User.png" alt="Usuario" width={40} height={40} priority />
             <div
@@ -73,7 +73,12 @@ const Sidebar: React.FC<SidebarProps> = React.memo( ({ isOpen }) => {
           <ul className="space-y-2">
             {menuItems.map((item, index) => (
               <li key={index}>
-                <Link href={item.link} className="p-4 flex items-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                <Link
+                  href={item.link}
+                  className="p-4 flex items-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+                  tabIndex={sidebarOpen ? 0 : -1}
+                  aria-hidden={!sidebarOpen}
+                >
                   <span>{item.icon}</span>
                   <div
                     className={`overflow-hidden transition-[width,opacity] ${sidebarOpen ? "ml-4 w-32 opacity-100 duration-300" : "w-0 opacity-0 duration-0"
@@ -88,12 +93,17 @@ const Sidebar: React.FC<SidebarProps> = React.memo( ({ isOpen }) => {
         </nav>
 
         {/* Footer */}
-        <div className="">
-          <Link href="#" onClick={handleLogout} className="p-3 space-y-4 flex items-center bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-gray-700">
+        <div>
+          <Link
+            href="#"
+            onClick={handleLogout}
+            className="p-3 space-y-4 flex items-center bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+            tabIndex={sidebarOpen ? 0 : -1}
+            aria-hidden={!sidebarOpen}
+          >
             <LogOut className="ml-4" />
             <div
-            
-              className={`pb-3 overflow-hidden transition-[width,opacity] ${sidebarOpen ? "ml-4 w-32 opacity-300" : "w-0 opacity-0 duration-0"
+              className={`pb-3 overflow-hidden transition-[width,opacity] ${sidebarOpen ? "ml-4 w-32 opacity-100" : "w-0 opacity-0 duration-0"
                 }`}
             >
               <span className="whitespace-nowrap">Cerrar Sesión</span>
@@ -102,6 +112,14 @@ const Sidebar: React.FC<SidebarProps> = React.memo( ({ isOpen }) => {
         </div>
       </div>
     </div>
+    {
+    sidebarOpen && (
+      <div 
+        className="fixed inset-0 bg-black/50 sm:hidden z-40">
+      </div>
+    )
+  }
+  </>
   );
 });
 

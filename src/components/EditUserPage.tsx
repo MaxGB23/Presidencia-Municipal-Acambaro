@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import { updateUser } from '@/actions/actions';
 import { toast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import { motion } from 'motion/react';
 
 const departamentos = [
   { value: "Contraloría", label: "Contraloría" },
@@ -64,51 +65,74 @@ export default function EditUserPage({ user }: { user: any }) {
     formData.append("permisos", data.permisos);
     formData.append("password", data.password);
 
-    await updateUser(formData, user.id);
-    router.push("/usuarios/view");
-    toast({
-      title: "Usuario Actualizado",
-      description: "La información del usuario ha sido actualizada correctamente.",
-      variant: "updated",
-    });
+    try {
+      const result = await await updateUser(formData, user.id);
+      if (!result.success) throw new Error(result.message);
+      router.push("/usuarios/view");
+      toast({
+        title: "Usuario Actualizado",
+        description: result.message,
+        variant: "updated",
+      });
+    } catch (error) {
+      router.refresh();
+      toast({
+        title: "Error al editar usuario",
+        description: error instanceof Error
+          ? error.message.includes("Cannot read properties of undefined (reading 'success')")
+            ? "Sesión expirada"
+            : error.message.includes('The "payload" argument must be of type object. Received null')
+              ? "El correo ya ha sido registrado"
+              : error.message
+          : "Ocurrió un error inesperado.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-6">
-      <div className="w-full max-w-[1100px] lg:h-[640px] rounded-lg shadow-lg overflow-hidden bg-white text-black pt-12">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex items-center justify-between px-10">
-            <div className="flex gap-x-4">
-              <h1 className="text-3xl lg:text-4xl font-bold text-gray-800">Editar Usuario</h1>
-              <UserRoundPlus className="hidden lg:block mb-2 size-7 lg:size-9" />
-            </div>
-            <Link href={"/usuarios/view"}>
-              <LayoutGrid className="mb-3 size-7 lg:size-8 text-black hover:text-red-600" />
-            </Link>
-          </div>
-
-          <div className="flex flex-col lg:flex-row w-full">
-            {/* Parte izquierda */}
-            <div className="w-full lg:w-1/2 p-10 flex flex-col justify-between gap-9">
-              <Input {...register('name')} type="text" id="name" label="Nombre" placeholder="Ingresa el Nombre" required />
-              <Input {...register('lastname')} type="text" id="lastname" label="Apellidos" placeholder="Ingresa los Apellidos" required />
-              <Input {...register('password')} type="password" id="password" label="Contraseña" placeholder="Ingresa la contraseña" />
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      transition={{ duration: 0.1 }}
+    >
+      <div className="flex justify-center items-center min-h-screen bg-gray-100 p-6">
+        <div className="w-full max-w-[1100px] lg:h-[640px] rounded-lg shadow-lg overflow-hidden bg-white text-black pt-12">
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex items-center justify-between px-10">
+              <div className="flex gap-x-4">
+                <h1 className="text-3xl lg:text-4xl font-bold text-gray-800">Editar Usuario</h1>
+                <UserRoundPlus className="hidden lg:block mb-2 size-7 lg:size-9" />
+              </div>
+              <Link href={"/usuarios/view"}>
+                <LayoutGrid className="mb-3 size-7 lg:size-8 text-black hover:text-red-600" />
+              </Link>
             </div>
 
-            {/* Parte derecha */}
-            <div className="w-full lg:w-1/2 bg-white text-black p-10 flex flex-col justify-between gap-9">
-              <Input {...register('email')} type="email" id="email" label="Correo Electrónico" placeholder="Ingresa el correo" required />
-              <Combobox options={departamentos} label="Departamento" value={watch('departamento_id')} onChange={(value) => setValue('departamento_id', value)} />
-              <Combobox options={permisos} label="Permisos" value={watch('permisos')} onChange={(value) => setValue('permisos', value)} />
-            </div>
-          </div>
+            <div className="flex flex-col lg:flex-row w-full">
+              {/* Parte izquierda */}
+              <div className="w-full lg:w-1/2 p-10 flex flex-col justify-between gap-9">
+                <Input {...register('name')} type="text" id="name" label="Nombre" placeholder="Ingresa el Nombre" required />
+                <Input {...register('lastname')} type="text" id="lastname" label="Apellidos" placeholder="Ingresa los Apellidos" required />
+                <Input {...register('password')} type="password" id="password" label="Contraseña" placeholder="Ingresa la contraseña" />
+              </div>
 
-          {/* Botón de envío */}
-          <div className="flex justify-center">
-            <Button className="mb-6 mx-12 lg:mx-60 mt-2" text="Actualizar Usuario" />
-          </div>
-        </form>
+              {/* Parte derecha */}
+              <div className="w-full lg:w-1/2 bg-white text-black p-10 flex flex-col justify-between gap-9">
+                <Input {...register('email')} type="email" id="email" label="Correo Electrónico" placeholder="Ingresa el correo" required />
+                <Combobox options={departamentos} label="Departamento" value={watch('departamento_id')} onChange={(value) => setValue('departamento_id', value)} />
+                <Combobox options={permisos} label="Permisos" value={watch('permisos')} onChange={(value) => setValue('permisos', value)} />
+              </div>
+            </div>
+
+            {/* Botón de envío */}
+            <div className="flex justify-center">
+              <Button className="mb-6 mx-12 lg:mx-60 mt-2" text="Actualizar Usuario" />
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
