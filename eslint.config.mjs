@@ -13,11 +13,9 @@ const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     rules: {
-      // Deshabilita todas las reglas de ESLint
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-vars": "off",
       "react/display-name": "off",
-      // Agrega aquí cualquier otra regla que quieras deshabilitar
     },
   },
 ];

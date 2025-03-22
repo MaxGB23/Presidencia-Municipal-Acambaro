@@ -42,7 +42,7 @@ export const EditModal: React.FC<EditModalProps> = ({ editingRow, onClose }) => 
 
     if (formData.fecha) {
       const date = new Date(formData.fecha);
-      const zonedDate = toZonedTime(date, 'Etc/GMT+12');
+      const zonedDate = toZonedTime(date, 'Etc/GMT+6');
 
       // Formato (YYYY-MM-DDTHH:MM)
       const year = zonedDate.getFullYear();
