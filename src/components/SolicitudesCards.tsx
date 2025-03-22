@@ -18,13 +18,13 @@ const SolicitudesCards: React.FC<SolicitudesCardsProps> = ({
 }) => {
   return (
     <div className="grid grid-cols-2 gap-5 lg:col-span-2">
-      {/* Card: Total de Solicitudes (Ocupa 2 columnas) */}
+      {/* Card: Total de Solicitudes */}
       <Card className="flex justify-center items-center dark:bg-gray-800 dark:text-white p-2 col-span-2 space-x-2">
-        <div className="flex items-center gap-2 p-4 lg:p-0">
+        <div className="flex items-center gap-2 p-4 pr-0 lg:p-0">
           <Users className="w-7 h-7 text-blue-700 dark:text-blue-400" />
           <CardTitle className="text-lg">Total de Solicitudes:</CardTitle>
         </div>
-        <div className="flex items-center space-x-4 text-center">
+        <div className="flex items-center text-center">
           <p className="text-xl font-bold">{totalSolicitudes}</p>
         </div>
       </Card>

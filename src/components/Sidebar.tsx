@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { set } from "date-fns";
 
 interface SidebarProps {
   isOpen: boolean;

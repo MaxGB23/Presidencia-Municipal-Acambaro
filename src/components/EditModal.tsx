@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { motion } from "motion/react"
-import { toZonedTime, format } from 'date-fns-tz';
+import { toZonedTime } from 'date-fns-tz';
 
 
 interface EditModalProps {
@@ -41,13 +41,10 @@ export const EditModal: React.FC<EditModalProps> = ({ editingRow, onClose }) => 
     const formDataToSend = new FormData(e.currentTarget as HTMLFormElement);
 
     if (formData.fecha) {
-      // Crear un objeto Date con la fecha proporcionada
       const date = new Date(formData.fecha);
+      const zonedDate = toZonedTime(date, 'Etc/GMT+12');
 
-      // Convertir la fecha a la zona horaria local (puedes cambiar 'America/Mexico_City' por tu zona horaria)
-      const zonedDate = toZonedTime(date, 'America/Mexico_City');
-
-      // Formatear la fecha en el formato deseado (YYYY-MM-DDTHH:MM)
+      // Formato (YYYY-MM-DDTHH:MM)
       const year = zonedDate.getFullYear();
       const month = (zonedDate.getMonth() + 1).toString().padStart(2, "0");
       const day = zonedDate.getDate().toString().padStart(2, "0");
@@ -56,7 +53,6 @@ export const EditModal: React.FC<EditModalProps> = ({ editingRow, onClose }) => 
 
       const fechaISO = `${year}-${month}-${day}T${hours}:${minutes}`;
 
-      // Establecer la fecha formateada en el FormData
       formDataToSend.set("fecha", fechaISO);
     }
 
