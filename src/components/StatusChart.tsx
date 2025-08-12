@@ -31,7 +31,7 @@ const COLORS = {
   Concluido: "#3b82f6",
 }
 
-export const StatusChart = React.memo(function StatusChart({ statusCounts }: StatusChartProps) {
+const StatusChart = React.memo(function StatusChart({ statusCounts }: StatusChartProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [chartType, setChartType] = useState("bar");
   const { theme } = useTheme();
@@ -204,4 +204,6 @@ export const StatusChart = React.memo(function StatusChart({ statusCounts }: Sta
     </Card>
   )
 });
+
+export default StatusChart;
 

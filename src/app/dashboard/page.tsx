@@ -1,74 +1,85 @@
+// Dashboard.tsx o page.tsx
+import { createLoader, parseAsInteger, parseAsString } from 'nuqs/server';
 import MainPage from "@/components/MainPage";
 import { prisma } from '@/lib/prisma';
 
-interface Params {
-  searchParams?: Promise<{
-    page: number;
-    limit: number;
-    search?: string;
-  }> | undefined;
-}
+const loader = createLoader({
+  page: parseAsInteger.withDefault(1),
+  limit: parseAsInteger.withDefault(5),
+  search: parseAsString.withDefault(""),
+});
 
-export default async function Dashboard({ searchParams }: Params) {
-  const params = await searchParams;
-  const page = Number(params?.page || 1);
-  const limit = Number(params?.limit || 5);
+export default async function Dashboard({ searchParams }: { searchParams: URLSearchParams | Record<string, string | undefined> }) {
+  const { search, page, limit } = await loader(searchParams);
   const skip = (page - 1) * limit;
-  const search = params?.search || ''; 
 
-  const totalSolicitudes = await prisma.solicitudes.count({
-    where: {
-      OR: [
-        { nombre: { contains: search, mode: 'insensitive' } },
-        { curp: { contains: search, mode: 'insensitive' } },
-      ],
-    },
-  });
+  const where = {
+    OR: [
+      { nombre: { contains: search } },
+      { curp: { contains: search } },
+      { apoyo_id: { contains: search } },
+      { estatus_id: { contains: search } },
+      {
+        actualizador: {
+          departamento_id: { contains: search },
+        },
+      },
+    ],
+  };
 
-  const solicitudes = await prisma.solicitudes.findMany({
-    skip, take: limit,
-    where: {
-      OR: [
-        { nombre: { contains: search, mode: 'insensitive' } },
-        { curp: { contains: search, mode: 'insensitive' } },
-      ],
-    },
-    select: {
-      id: true, curp: true, nombre: true, domicilio: true,
-      telefono: true, solicitud: true, apoyo_id: true, fecha: true, 
-      estatus_id: true, nota: true, updatedBy: true, updatedAt: true,
-      actualizador: { 
-        select: { id: true, name: true, departamento_id: true } },
-    },
-    orderBy: { id: "desc" },
-  }); 
+  const [totalSolicitudes, solicitudes, solicitudesCount] = await Promise.all([
+    prisma.solicitudes.count({ where }),
+    prisma.solicitudes.findMany({
+      skip,
+      take: limit,
+      where,
+      select: {
+        id: true,
+        curp: true,
+        nombre: true,
+        domicilio: true,
+        telefono: true,
+        solicitud: true,
+        apoyo_id: true,
+        fecha: true,
+        estatus_id: true,
+        nota: true,
+        updatedBy: true,
+        updatedAt: true,
+        actualizador: {
+          select: {
+            id: true,
+            name: true,
+            departamento_id: true,
+          },
+        },
+      },
+      orderBy: { id: "desc" },
+    }),
+    prisma.solicitudes.groupBy({
+      by: ["estatus_id"],
+      _count: { id: true },
+    }),
+  ]);
 
-  const solicitudesCount = await prisma.solicitudes.groupBy({
-    by: ['estatus_id'], _count: { id: true },
-  });
+  const estatusMap: Record<string, number> = Object.fromEntries(
+    solicitudesCount.map((s) => [s.estatus_id, s._count.id])
+  );
 
   const estatusCount = {
-    Recibido: solicitudesCount.find(
-      s => s.estatus_id === "Recibido")?._count.id || 0,
-    Pendiente: solicitudesCount.find(
-      s => s.estatus_id === "Pendiente")?._count.id || 0,
-    Cancelado: solicitudesCount.find(
-      s => s.estatus_id === "Cancelado")?._count.id || 0,
-    Concluido: solicitudesCount.find(
-      s => s.estatus_id === "Concluido")?._count.id || 0,
+    Recibido: estatusMap["Recibido"] || 0,
+    Pendiente: estatusMap["Pendiente"] || 0,
+    Cancelado: estatusMap["Cancelado"] || 0,
+    Concluido: estatusMap["Concluido"] || 0,
   };
 
   return (
-    <MainPage solicitudes={solicitudes} currentPage={page} limit={limit}  
-      totalSolicitudes={totalSolicitudes} estatusCount={estatusCount} />
+    <MainPage
+      solicitudes={solicitudes}
+      currentPage={page}
+      limit={limit}
+      totalSolicitudes={totalSolicitudes}
+      estatusCount={estatusCount}
+    />
   );
 }
-
-
-// { domicilio: { contains: search, mode: 'insensitive' } },
-// { telefono: { contains: search, mode: 'insensitive' } },
-// { apoyo_id: { contains: search, mode: 'insensitive' } },
-// { solicitud: { contains: search, mode: 'insensitive' } },
-// { estatus_id: { contains: search, mode: 'insensitive' } },
-// { nota: { contains: search, mode: 'insensitive' } },
-// { actualizador: { departamento_id: { contains: search, mode: 'insensitive' } } },

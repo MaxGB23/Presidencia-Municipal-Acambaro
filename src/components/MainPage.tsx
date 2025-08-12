@@ -1,8 +1,8 @@
 'use client'
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { DataTable } from "@/components/DataTable"
-import { StatusChart } from "@/components/StatusChart"
+import DataTable from "@/components/DataTable"
+import StatusChart from "@/components/StatusChart"
 import Sidebar from "@/components/Sidebar"
 import Navbar from "@/components/Navbar";
 import { Pencil, CirclePlus, CircleX } from "lucide-react"
@@ -13,6 +13,7 @@ import { deleteSolicitud } from "@/actions/actions";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import Footer from "@/components/Footer";
+import { useSidebarStore } from "@/store/sidebarStore";
 
 interface Solicitud {
   id: number;
@@ -82,35 +83,17 @@ export default function MainPage({ solicitudes, totalSolicitudes, currentPage, l
         : null,
       updatedAt: formatDate(updatedAt, false),
     };
-  });
+  }); 
 
   const totalAbsoluto = Object.values(estatusCount).reduce((acc, value) => acc + value, 0);
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const toggleSidebar = () => setIsOpen(!isOpen);
+  // const toggleSidebar = () => setIsOpen(!isOpen);
   const closeModal = () => setIsModalOpen(false);
   const { toast } = useToast()
   const router = useRouter();
-  const [searchValue, setSearchValue] = useState('');
-  const searchParams = useSearchParams();
 
-  const handleSearchChange = (value: string) => {
-    setSearchValue(value);
-  };
-
-  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const params = new URLSearchParams(searchParams.toString());
-    if (searchValue) {
-      params.set("search", searchValue);
-    } else {
-      params.delete("search");
-    }
-    params.set("page", "1");
-
-    router.replace(`?${params.toString()}`);
-  };
 
   const handleAdd = async () => {
     router.refresh()
@@ -143,16 +126,19 @@ export default function MainPage({ solicitudes, totalSolicitudes, currentPage, l
     }
   };
 
+    const isOpen = useSidebarStore((state) => state.isOpen);
+    const toggleSidebar = useSidebarStore((state) => state.toggleSidebar);
+
   const { data: session } = useSession();
   const tienePermisos = session?.user?.permisos !== "Visualizacion";
 
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-      <Sidebar isOpen={isOpen} />
+      <Sidebar/>
       {/* Contenedor principal */} 
       <div className="flex-1 overflow-auto">
         {/* Navbar con posición sticky */}
-        <Navbar toggleSidebar={toggleSidebar} isOpen={isOpen} searchValue={searchValue} handleSearchChange={handleSearchChange} handleSearchSubmit={handleSearchSubmit} />
+        <Navbar toggleSidebar={toggleSidebar} isOpen={isOpen} />
         {/* Contenido principal */}
         <div className="p-8 pt-0">
           <h1 className="text-3xl font-bold dark:text-white pl-3 py-6">Panel de Administración</h1>
@@ -228,4 +214,8 @@ export default function MainPage({ solicitudes, totalSolicitudes, currentPage, l
       <ModalAgregarSolicitud isModalOpen={isModalOpen} closeModal={closeModal} onAdd={handleAdd} />
     </div>
   );
+}
+
+function useQueryState(arg0: string, arg1: { history: string; throttleMs: number; }): [any, any] {
+  throw new Error("Function not implemented.");
 }

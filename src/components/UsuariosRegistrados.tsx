@@ -12,6 +12,8 @@ import Link from "next/link";
 import { deleteUser } from "@/actions/actions";
 import { toast } from "@/hooks/use-toast";
 import Footer from '@/components/Footer';
+import { useSidebarStore } from '@/store/sidebarStore';
+import DashboardLayout from './layouts/DashboardLayout';
 
 interface Usuario {
   id: number;
@@ -42,11 +44,14 @@ export default function UsuariosRegistrados({ users, totalUsers, currentPage, li
     router.replace(`${pathName}?${newSearchParams.toString()}`);
   };
 
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
+    // const toggleSidebar = () => setIsOpen(!isOpen);
+  // const toggleSidebar = () => setIsOpen(!isOpen);
+
   const [searchValue, setSearchValue] = useState('');
 
-  const toggleSidebar = () => setIsOpen(!isOpen);
-
+  const isOpen = useSidebarStore((state) => state.isOpen)
+  const toggleSidebar = useSidebarStore((state) => state.toggleSidebar)
   const handleSearchChange = (value: string) => {
     setSearchValue(value);
     // Actualizar la URL con el valor de búsqueda
@@ -86,9 +91,12 @@ export default function UsuariosRegistrados({ users, totalUsers, currentPage, li
 
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-      <Sidebar isOpen={isOpen} />
+      <Sidebar />
+      {/* Contenedor principal */} 
       <div className="flex-1 overflow-auto">
+        {/* Navbar con posición sticky */}
         <Navbar toggleSidebar={toggleSidebar} isOpen={isOpen} searchValue={searchValue} handleSearchChange={handleSearchChange} handleSearchSubmit={handleSearchSubmit} />
+        {/* Contenido principal */}
         <div className="p-8 space-x-8">
           <Card className="bg-white dark:bg-gray-800">
             <div className="p-7 pb-5 flex justify-between align-items-center">

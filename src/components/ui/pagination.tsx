@@ -53,7 +53,9 @@ const PaginationLink = ({
         variant: isActive ? "outline" : "ghost",
         size,
       }),
-      disabled && "opacity-50 pointer-events-none", // Añadir clases para inhabilitar
+      disabled
+        ? "opacity-50 pointer-events-none cursor-not-allowed"
+        : "cursor-pointer",
       className
     )}
     {...props}
@@ -74,7 +76,7 @@ const PaginationPrevious = ({
     {...props}
   >
     <ChevronLeft className="h-4 w-4" />
-    <span>Anterior</span>
+    <span className="hidden md:inline">Anterior</span>
   </PaginationLink>
 )
 PaginationPrevious.displayName = "PaginationPrevious"
@@ -91,8 +93,10 @@ const PaginationNext = ({
     disabled={disabled} // Pasar disabled aquí
     {...props}
   >
-    <span>Siguiente</span>
+    <span className="hidden md:inline">Siguiente</span>
+
     <ChevronRight className="h-4 w-4" />
+
   </PaginationLink>
 )
 PaginationNext.displayName = "PaginationNext"

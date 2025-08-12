@@ -20,13 +20,11 @@ export default async function UsuariosPage({ searchParams }: Params) {
   const totalUsers = await prisma.user.count({
     where: {
       OR: [
-        { name: { contains: search, mode: 'insensitive' } }, 
-        { email: { contains: search, mode: 'insensitive' } },
-        { name: { contains: search, mode: 'insensitive' } },
-        { lastname: { contains: search, mode: 'insensitive' } },
-        { email: { contains: search, mode: 'insensitive' } },
-        { departamento_id: { contains: search, mode: 'insensitive' } },
-        { permisos: { contains: search, mode: 'insensitive' } },
+        { name: { contains: search } }, 
+        { email: { contains: search } },
+        { lastname: { contains: search } },
+        { departamento_id: { contains: search } },
+        { permisos: { contains: search } },
       ],
     },
   });
@@ -36,11 +34,11 @@ export default async function UsuariosPage({ searchParams }: Params) {
     take: limit,
     where: {
       OR: [
-        { name: { contains: search, mode: 'insensitive' } },
-        { lastname: { contains: search, mode: 'insensitive' } },
-        { email: { contains: search, mode: 'insensitive' } },
-        { departamento_id: { contains: search, mode: 'insensitive' } },
-        { permisos: { contains: search, mode: 'insensitive' } },
+        { name: { contains: search } }, 
+        { email: { contains: search } },
+        { lastname: { contains: search } },
+        { departamento_id: { contains: search } },
+        { permisos: { contains: search } },
       ],
     },
     orderBy: { createdAt: 'asc' },

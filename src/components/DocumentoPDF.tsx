@@ -10,6 +10,7 @@ import { FilePen } from "lucide-react";
 import Link from "next/link";
 import Footer from '@/components/Footer';
 import PDF from "@/components/PDF";
+import DashboardLayout from './layouts/DashboardLayout';
 
 interface Data {
   id: number;
@@ -32,7 +33,7 @@ export default function DocumentoPDF({ data, currentPage, limit }: Props) {
   const [vistaPrevia, setVistaPrevia] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
-  const toggleSidebar = () => setIsOpen(!isOpen);
+  // const toggleSidebar = () => setIsOpen(!isOpen);
 
     const [searchValue, setSearchValue] = useState('');
     const searchParams = useSearchParams();
@@ -64,11 +65,7 @@ export default function DocumentoPDF({ data, currentPage, limit }: Props) {
   } 
 
   return (
-    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-      <Sidebar isOpen={isOpen} />
-      <div className="flex-1 overflow-auto">
-        <Navbar toggleSidebar={toggleSidebar} isOpen={isOpen} searchValue={searchValue} 
-          handleSearchChange={handleSearchChange} handleSearchSubmit={handleSearchSubmit} />
+<DashboardLayout>
         <div className="p-8">
           <Card className="bg-white dark:bg-gray-800">
             <div className="p-7 pb-5 flex justify-between align-items-center">
@@ -143,7 +140,6 @@ export default function DocumentoPDF({ data, currentPage, limit }: Props) {
           
           <Footer />
         </div>
-      </div>
-    </div>
+</DashboardLayout>
   );
 }
