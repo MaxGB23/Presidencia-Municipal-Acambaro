@@ -40,7 +40,7 @@ const Sidebar = React.memo(() => {
         ]
       : []),
     ...(isAdmin
-      ? [{ name: "Usuarios", icon: <User />, link: "/usuarios/view" }]
+      ? [{ name: "Usuarios", icon: <User />, link: "/dashboard/usuarios/view" }]
       : []),
   ];
 
@@ -62,7 +62,9 @@ const Sidebar = React.memo(() => {
               height={40}
               priority
             />
-            <div className="ml-4 w-32 opacity-0 sm:group-hover:opacity-100 sm:group-hover:block transition-opacity duration-300">
+            <div className={`ml-4 w-32 transition-opacity duration-300 ${
+  sidebarOpen ? "opacity-100" : "opacity-0 sm:group-hover:opacity-100"
+}`}>
               {session ? (
                 <>
                   <h2 className="text-lg font-semibold whitespace-nowrap">
@@ -85,15 +87,25 @@ const Sidebar = React.memo(() => {
             <ul className="space-y-2">
               {menuItems.map((item, index) => (
                 <li key={index}>
-                  <Link
-                    href={item.link}
-                    className="p-4 flex items-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
-                  >
-                    <span>{item.icon}</span>
-                    <div className="ml-4 w-32 opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
-                      <span className="whitespace-nowrap">{item.name}</span>
-                    </div>
-                  </Link>
+<Link
+  href={item.link}
+  onClick={() => {
+    // Si el overlay existe, significa que estamos en mobile
+    if (document.querySelector(".sm\\:hidden")) {
+      useSidebarStore.getState().setIsOpen(false);
+    }
+  }}
+  className="p-4 flex items-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+>
+  <span>{item.icon}</span>
+  <div
+    className={`ml-4 w-32 transition-opacity duration-300 ${
+      sidebarOpen ? "opacity-100" : "opacity-0 sm:group-hover:opacity-100"
+    }`}
+  >
+    <span className="whitespace-nowrap">{item.name}</span>
+  </div>
+</Link>
                 </li>
               ))}
             </ul>
