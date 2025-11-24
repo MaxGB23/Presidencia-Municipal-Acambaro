@@ -32,6 +32,7 @@ const Sidebar: React.FC<SidebarProps> = React.memo( ({ isOpen }) => {
 
   const menuItems = [
     { name: "Inicio", icon: <Home />, link: "/dashboard" },
+    { name: "CAF", icon: <Home />, link: "/" },
     // { name: "Apoyos", icon: <HeartHandshake />, link: "/solicitudes" },
     // { name: "Estadísticas", icon: <PieChart />, link: "/estadisticas" },
     ...(isEditor || isAdmin ? [{ name: "Documento PDF", icon: <FileOutput />, link: "/documento-pdf" }] : []),
