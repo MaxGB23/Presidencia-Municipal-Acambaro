@@ -169,7 +169,7 @@ export default function Home() {
                           <p className="text-gray-600 dark:text-gray-400 text-sm">Corredor</p>
                         </div>
                       </div>
-                      <p className="text-gray-800 dark:text-gray-300 text-sm font-normal leading-relaxed">"Después de mi lesión de rodilla, pensé que nunca volvería a correr. El equipo de CAF no solo me ayudó a recuperarme, sino que mejoró mi técnica. ¡Vuelvo a correr sin dolor!"</p>
+                      <p className="text-gray-800 dark:text-gray-300 text-sm font-normal leading-relaxed">Después de mi lesión de rodilla, pensé que nunca volvería a correr. El equipo de CAF no solo me ayudó a recuperarme, sino que mejoró mi técnica. ¡Vuelvo a correr sin dolor!</p>
                     </div>
                     <div className="flex flex-col gap-4 p-6 rounded-xl border border-gray-200 dark:border-gray-800 bg-background-light dark:bg-background-dark">
                       <div className="flex items-center gap-4">
@@ -179,7 +179,7 @@ export default function Home() {
                           <p className="text-gray-600 dark:text-gray-400 text-sm">Trabajadora de Oficina</p>
                         </div>
                       </div>
-                      <p className="text-gray-800 dark:text-gray-300 text-sm font-normal leading-relaxed">"El dolor crónico de espalda por pasar el día sentada era insoportable. CAF me brindó ejercicios y terapia manual que hicieron una gran diferencia. Su enfoque integral es fantástico."</p>
+                      <p className="text-gray-800 dark:text-gray-300 text-sm font-normal leading-relaxed">El dolor crónico de espalda por pasar el día sentada era insoportable. CAF me brindó ejercicios y terapia manual que hicieron una gran diferencia. Su enfoque integral es fantástico.</p>
                     </div>
                     <div className="flex flex-col gap-4 p-6 rounded-xl border border-gray-200 dark:border-gray-800 bg-background-light dark:bg-background-dark">
                       <div className="flex items-center gap-4">
@@ -189,7 +189,7 @@ export default function Home() {
                           <p className="text-gray-600 dark:text-gray-400 text-sm">Post-Cirugía</p>
                         </div>
                       </div>
-                      <p className="text-gray-800 dark:text-gray-300 text-sm font-normal leading-relaxed">"El plan de rehabilitación post-operatoria fue perfectamente adaptado. Los fisioterapeutas fueron increíblemente profesionales y me recuperé más rápido de lo que esperaba."</p>
+                      <p className="text-gray-800 dark:text-gray-300 text-sm font-normal leading-relaxed">El plan de rehabilitación post-operatoria fue perfectamente adaptado. Los fisioterapeutas fueron increíblemente profesionales y me recuperé más rápido de lo que esperaba.</p>
                     </div>
                   </div>
                 </div>
@@ -267,7 +267,7 @@ export default function Home() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" htmlFor="message">Mensaje</label>
-                        <textarea className="w-full rounded-lg border-gray-300 dark:border-gray-700 bg-background-light dark:bg-background-dark focus:border-plantilla-primary focus:ring-plantilla-primary text-gray-800 dark:text-gray-300" id="message" placeholder="Tu mensaje..." rows="4" name="message" required></textarea>
+                        <textarea className="w-full rounded-lg border-gray-300 dark:border-gray-700 bg-background-light dark:bg-background-dark focus:border-plantilla-primary focus:ring-plantilla-primary text-gray-800 dark:text-gray-300" id="message" placeholder="Tu mensaje..." rows={4} name="message" required></textarea>
                       </div>
 
                       {/* Botón de Submit */}
