@@ -1,3 +1,5 @@
+import CalendlyWidget from "@/components/calendars/CalendlyWidget";
+import CalWidget from "@/components/calendars/CalWidget";
 import { Dumbbell, Hand, Mail, MapPin, Phone, Stethoscope, ZapOff } from "lucide-react";
 
 export default function Home() {
@@ -279,6 +281,14 @@ export default function Home() {
                 </div>
               </div>
             </section>
+
+             {/* Seccion de agendar citas */}
+            <div>
+              <CalendlyWidget />
+              <CalWidget />
+            </div>
+
+
             </main>
             <footer className="bg-white dark:bg-background-dark/50 border-t border-gray-200 dark:border-gray-800">
               <div className="max-w-7xl mx-auto px-4 md:px-10 lg:px-20 py-8">

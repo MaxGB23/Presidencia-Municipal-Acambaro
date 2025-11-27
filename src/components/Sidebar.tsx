@@ -16,7 +16,7 @@ const Sidebar: React.FC<SidebarProps> = React.memo( ({ isOpen }) => {
   const isEditor = session?.user?.permisos === "Edicion";
 
   const router = useRouter();  
-
+  
   const handleLogout = async () => {
     await signOut({ redirect: false });
     router.push("/auth/login");
