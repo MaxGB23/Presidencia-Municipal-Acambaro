@@ -228,7 +228,7 @@ export function DataTable({ data, isEditing, totalSolicitudes, currentPage, limi
             )
           }
         </span>
-        <Pagination>
+        {/* <Pagination>
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className='dark:hover:bg-gray-700' />
@@ -244,7 +244,7 @@ export function DataTable({ data, isEditing, totalSolicitudes, currentPage, limi
               <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages || totalPages === 0} className='dark:hover:bg-gray-700' />
             </PaginationItem>
           </PaginationContent>
-        </Pagination>
+        </Pagination> */}
       </div>
       {selectedRow && (
         <div className="hidden">

@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "nombre": "Elena García",
+    "edad": 35,
+    "patologia": "Lumbalgia Crónica",
+    "paquete": "10 Sesiones",
+    "estatus": "Activo",
+    "pago": 500000
+  },
+  {
+    "id": 2,
+    "nombre": "Javier Torres",
+    "edad": 58,
+    "patologia": "Post-operatorio Rodilla (LCA)",
+    "paquete": "20 Sesiones Premium",
+    "estatus": "Activo",
+    "pago": 750000
+  },
+  {
+    "id": 3,
+    "nombre": "Sofía Reyes",
+    "edad": 22,
+    "patologia": "Esguince de Tobillo Grado II",
+    "paquete": "5 Sesiones",
+    "estatus": "Activo",
+    "pago": 0
+  },
+  {
+    "id": 4,
+    "nombre": "Carlos Mendoza",
+    "edad": 71,
+    "patologia": "Artritis de Cadera",
+    "paquete": "15 Sesiones",
+    "estatus": "Finalizado",
+    "pago": 600000
+  },
+  {
+    "id": 5,
+    "nombre": "Laura Pérez",
+    "edad": 45,
+    "patologia": "Tendinopatía del Manguito Rotador",
+    "paquete": "10 Sesiones",
+    "estatus": "Activo",
+    "pago": 500000
+  },
+  {
+    "id": 6,
+    "nombre": "Ricardo Núñez",
+    "edad": 29,
+    "patologia": "Cervicalgia Postural",
+    "paquete": "8 Sesiones",
+    "estatus": "Activo",
+    "pago": 250000
+  },
+  {
+    "id": 7,
+    "nombre": "Andrea Castro",
+    "edad": 65,
+    "patologia": "Parkinson - Alteración de la Marcha",
+    "paquete": "30 Sesiones Intensivo",
+    "estatus": "Activo",
+    "pago": 1200000
+  },
+  {
+    "id": 8,
+    "nombre": "Pablo Herrera",
+    "edad": 18,
+    "patologia": "Fractura de Clavícula (Rehabilitación)",
+    "paquete": "12 Sesiones",
+    "estatus": "Activo",
+    "pago": 0
+  },
+  {
+    "id": 9,
+    "nombre": "Marcela Soto",
+    "edad": 49,
+    "patologia": "Hernia Discal L5-S1",
+    "paquete": "20 Sesiones Premium",
+    "estatus": "Activo",
+    "pago": 800000
+  },
+  {
+    "id": 10,
+    "nombre": "Daniel Vélez",
+    "edad": 52,
+    "patologia": "Síndrome del Túnel Carpiano",
+    "paquete": "7 Sesiones",
+    "estatus": "Finalizado",
+    "pago": 350000
+  }
+]
