@@ -11,6 +11,7 @@ export default function Page() {
   return (
     <SidebarProvider>
       <AppSidebar variant="inset" />
+      Sidebar
       {/* <SidebarInset> */}
         <SiteHeader />
         <div className="flex flex-1 flex-col">
