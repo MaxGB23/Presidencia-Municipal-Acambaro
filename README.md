@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dashboard — Presidencia Municipal de Acámbaro
 
-## Getting Started
+Panel administrativo de gestión municipal (solicitudes, usuarios y documentos PDF).
 
-First, run the development server:
+Este repositorio es una **demo pública**: cualquier visitante puede iniciar sesión y explorar **todas las secciones en modo lectura**. Las escrituras están protegidas en el servidor para que la demo no pueda ser modificada.
+
+🔐 **Acceso demo:** `invitado@gmail.com` / `invitado#1234` (rol *Visualización*).
+
+## Stack
+
+| Capa            | Tecnología                                                   |
+| --------------- | ------------------------------------------------------------ |
+| Framework       | Next.js 15 (App Router) + React 19 + TypeScript              |
+| Estilos         | Tailwind CSS + componentes estilo shadcn/ui (Radix)          |
+| Autenticación   | NextAuth 4 (credentials, sesión JWT)                         |
+| Base de datos   | PostgreSQL (Neon) + Prisma 6                                 |
+| PDF             | html2pdf.js                                                  |
+| Package manager | pnpm 11 — pins exactos y gate de antigüedad en `pnpm-workspace.yaml` |
+
+## Funcionalidades
+
+- **Login por credenciales** con tres roles: `Admin`, `Edicion` y `Visualizacion`.
+- **Dashboard** (`/dashboard`): tabla de solicitudes con alta, edición y baja.
+- **Documento PDF** (`/documento-pdf`): generación y edición de documentos.
+- **Usuarios** (`/usuarios`): listado y edición de usuarios (permisos y contraseña).
+- Rutas existentes adicionales: `/solicitudes` y `/estadisticas` (sin sección en el menú por defecto).
+
+## Acceso por rol
+
+| Rol             | Ver todas las secciones | Escritura                                                      |
+| --------------- | ----------------------- | -------------------------------------------------------------- |
+| `Admin`         | ✅                      | ✅                                                             |
+| `Edicion`       | ✅                      | ✅                                                             |
+| `Visualizacion` | ✅                      | ❌ (*"No tienes permisos para realizar esta acción"*)          |
+
+La protección de escritura vive en el **servidor**: las server actions y `POST /api/auth/register` validan la sesión y el rol antes de mutar la base de datos. Ocultar botones en el frontend es solo UX, no seguridad.
+
+**Permiso extra de `Admin`:** registrar usuarios y administrarlos — alta, edición de permisos, cambio de contraseña y baja — desde la sección `/usuarios`.
+
+## Puesta en marcha
+
+Requisitos: Node.js 20+ y pnpm 11 (el `packageManager` está fijado en el repo).
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# 1. Instalar dependencias
+pnpm install
+
+# 2. Variables de entorno (.env)
+#    DATABASE_URL=postgresql://...   # obligatoria
+#    NEXTAUTH_SECRET=...             # recomendada
+#    NEXT_PUBLIC_BASE_URL=...        # opcional: URLs absolutas de la API de PDF
+
+# 3. Aplicar migraciones
+pnpm exec prisma migrate deploy
+
+# 4. Entorno de desarrollo
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> ⚠️ `prisma migrate deploy` también corre automáticamente dentro de `pnpm build`. No ejecutes el build de producción si la base de datos no está lista.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Despliegue (Vercel)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Paso    | Comando                                       |
+| ------- | --------------------------------------------- |
+| Install | `pnpm install` (default de Vercel)            |
+| Build   | `pnpm build` → `prisma migrate deploy && next build` |
 
-## Learn More
+Variables de entorno requeridas en Vercel: `DATABASE_URL`, `NEXTAUTH_SECRET` y, opcionalmente, `NEXT_PUBLIC_BASE_URL`.
 
-To learn more about Next.js, take a look at the following resources:
+## Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Comando                 | Acción                                  |
+| ----------------------- | --------------------------------------- |
+| `pnpm dev`              | Servidor de desarrollo                  |
+| `pnpm build`            | Migraciones + build de producción       |
+| `pnpm start`            | Servidor de producción                  |
+| `pnpm lint`             | ESLint                                  |
+| `pnpm exec tsc --noEmit` | Type check                              |
