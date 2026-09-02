@@ -2,8 +2,28 @@ import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
+  const session = await getServerSession(authOptions);
+  const permisos = session?.user?.permisos;
+
+  if (
+    !session ||
+    !permisos ||
+    (permisos !== "Admin" && permisos !== "Edicion")
+  ) {
+    return NextResponse.json(
+      {
+        message: "No tienes permisos para realizar esta acción",
+      },
+      {
+        status: 403,
+      }
+    );
+  }
+
   try {
     const data = await request.json();
 

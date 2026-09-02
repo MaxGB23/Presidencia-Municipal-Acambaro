@@ -9,19 +9,6 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
-  const pathname = req.nextUrl.pathname;
-
-  if (pathname.startsWith("/usuarios") && token.permisos !== "Admin") {
-    return NextResponse.redirect(new URL("/unauthorized", req.url));
-  }
-
-  if (
-    pathname.startsWith("/documento-pdf") &&
-    token.permisos === "Visualizacion"
-  ) {
-    return NextResponse.redirect(new URL("/unauthorized", req.url));
-  }
-
   return NextResponse.next();
 }
 

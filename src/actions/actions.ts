@@ -1,8 +1,28 @@
 "use server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+
+function permissionDenied() {
+  return { success: false as const, message: "No tienes permisos para realizar esta acción" };
+}
+
+async function getWriteSession() {
+  const session = await getServerSession(authOptions);
+  const permisos = session?.user?.permisos;
+
+  if (!session || !permisos || permisos === "Visualizacion") {
+    return permissionDenied();
+  }
+
+  return null;
+}
 
 export async function createSolicitud(formData: FormData, userId: string) {
+  const denied = await getWriteSession();
+  if (denied) return denied;
+
   try {
     const userIdInt = parseInt(userId, 10);
     await prisma.solicitudes.create({
@@ -41,6 +61,9 @@ export async function updateSolicitud(
   userId: string,
   id: string
 ) {
+  const denied = await getWriteSession();
+  if (denied) return denied;
+
   try {
     const userIdInt = parseInt(userId, 10);
     const idInt = parseInt(id, 10);
@@ -76,6 +99,9 @@ export async function updateSolicitud(
 }
 
 export async function deleteSolicitud(id: number) {
+  const denied = await getWriteSession();
+  if (denied) return denied;
+
   try {
     await prisma.solicitudes.delete({ where: { id } });
     console.log("Solicitud no.", id, "eliminada con éxito");
@@ -95,6 +121,9 @@ export async function deleteSolicitud(id: number) {
 
 // User Actions
 export async function updateUser(formData: FormData, id: string) {
+  const denied = await getWriteSession();
+  if (denied) return denied;
+
   try {
     const idInt = parseInt(id, 10);
     await prisma.user.update({
@@ -121,6 +150,9 @@ export async function updateUser(formData: FormData, id: string) {
 }
 
 export async function deleteUser(id: number) {
+  const denied = await getWriteSession();
+  if (denied) return denied;
+
   try {
     await prisma.user.delete({ where: { id } });
     console.log("Usuario no.", id, "eliminado con éxito");
@@ -140,6 +172,9 @@ export async function deleteUser(id: number) {
 
 // pdf actions
 export async function updateDocument(formData: FormData, id: string) {
+  const denied = await getWriteSession();
+  if (denied) return denied;
+
   try {
     const idInt = parseInt(id, 10);
     const hayJefe = formData.get("hay_jefe") === "true";

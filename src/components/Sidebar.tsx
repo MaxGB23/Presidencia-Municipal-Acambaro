@@ -12,8 +12,6 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = React.memo( ({ isOpen }) => {
   const [isHovered, setIsHovered] = useState(false);
   const { data: session } = useSession();
-  const isAdmin = session?.user?.permisos === "Admin";
-  const isEditor = session?.user?.permisos === "Edicion";
 
   const router = useRouter();  
 
@@ -34,8 +32,8 @@ const Sidebar: React.FC<SidebarProps> = React.memo( ({ isOpen }) => {
     { name: "Inicio", icon: <Home />, link: "/dashboard" },
     // { name: "Apoyos", icon: <HeartHandshake />, link: "/solicitudes" },
     // { name: "Estadísticas", icon: <PieChart />, link: "/estadisticas" },
-    ...(isEditor || isAdmin ? [{ name: "Documento PDF", icon: <FileOutput />, link: "/documento-pdf" }] : []),
-    ...(isAdmin ? [{ name: "Usuarios", icon: <User />, link: "/usuarios/view" }] : []),
+    { name: "Documento PDF", icon: <FileOutput />, link: "/documento-pdf" },
+    { name: "Usuarios", icon: <User />, link: "/usuarios/view" },
   ];  
 
   const sidebarOpen = isOpen || isHovered;
