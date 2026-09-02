@@ -9,27 +9,36 @@ import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 
 function LoginPage() {
-  const { register, handleSubmit, formState: { errors }, } = useForm();
+  const { register, handleSubmit, formState: { errors }, } = useForm({
+    defaultValues: {
+      email: 'invitado@gmail.com',
+      password: 'invitado#1234'
+    }
+  });
 
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = handleSubmit(async (data: any) => {
-    console.log(data);
-    const res = await signIn('credentials', {
-      email: data.email,
-      password: data.password,
-      redirect: false      
-    });
-    console.log(res);
-    
-    if (!res || res.error) {
-      setError(res?.error ?? "Ocurrió un error inesperado");
-      return;
-    }
+    setLoading(true);
+    try {
+      const res = await signIn('credentials', {
+        email: data.email,
+        password: data.password,
+        redirect: false      
+      });
+      
+      if (!res || res.error) {
+        setError(res?.error ?? "Ocurrió un error inesperado");
+        return;
+      }
 
-    router.push('/dashboard');
-    router.refresh();
+      router.push('/dashboard');
+      router.refresh();
+    } finally {
+      setLoading(false);
+    }
   });
 
   return (
@@ -66,7 +75,10 @@ function LoginPage() {
                   }
                 })}
               />
-              <Button className="mt-4" text="Iniciar Sesión" />
+              <Button className="mt-4"
+                text={loading ? "Iniciando sesión..." : "Iniciar Sesión"}
+                loading={loading}
+              />
             </div>
             {/* Parte derecha del formulario */}
             <LoginSide />
